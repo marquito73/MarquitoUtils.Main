@@ -1,7 +1,7 @@
 ﻿using MarquitoUtils.Main.Class.Enums;
 using System.Collections.Generic;
 
-namespace MarquitoUtils.Main.Class.Enum.Files.Audio
+namespace MarquitoUtils.Main.Class.Enums.Files.Audio
 {
     public class EnumAudioFile : EnumClass
     {

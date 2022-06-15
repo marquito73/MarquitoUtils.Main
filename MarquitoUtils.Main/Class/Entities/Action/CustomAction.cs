@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows;
 
-namespace MarquitoUtils.Main.Class.Entity.Action
+namespace MarquitoUtils.Main.Class.Entities.Action
 {
     /// <summary>
     /// Custom action, can executed later by the run()

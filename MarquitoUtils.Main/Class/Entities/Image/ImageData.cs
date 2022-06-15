@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MarquitoUtils.Main.Class.Entity.Image
+namespace MarquitoUtils.Main.Class.Entities.Image
 {
     public class ImageData
     {

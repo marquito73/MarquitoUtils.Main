@@ -1,5 +1,5 @@
-﻿using MarquitoUtils.Main.Class.Entity.Image;
-using MarquitoUtils.Main.Class.Entity.Param;
+﻿using MarquitoUtils.Main.Class.Entities.Image;
+using MarquitoUtils.Main.Class.Entities.Param;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -426,10 +426,10 @@ namespace MarquitoUtils.Main.Class.Tools
         }
 
         /// <summary>
-        /// Can convert DateTime to string
+        /// Can convert Image to 64 base string
         /// </summary>
-        /// <param name="data">DateTime data</param>
-        /// <returns>DateTime converted to string</returns>
+        /// <param name="data">Image</param>
+        /// <returns>Image converted to 64 base string</returns>
         public static string GetAsString(ImageData data)
         {
             return Convert.ToBase64String(data.ImageBinaryData);

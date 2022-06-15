@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MarquitoUtils.Main.Class.Entity.Param
+﻿namespace MarquitoUtils.Main.Class.Entities.Param
 {
     /// <summary>
     /// Parameter, with name and value
