@@ -34,6 +34,9 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         public List<T> GetEntityList<T>() 
             where T : Entity, IEntity;
 
+        public List<T> GetEntityList<T>(List<Func<T, bool>> filters, List<string> includes) 
+            where T : Entity, IEntity;
+
         public bool FlushData();
 
         // TODO Ajouter des methodes de persist, flush et une variable contenant les éléments non flushés

@@ -16,7 +16,7 @@ namespace MarquitoUtils.Main.Class.Tools
     /// <summary>
     /// A class with a lot of useful things
     /// </summary>
-    public class Utility
+    public class Utils
     {
         /// <summary>
         /// Get a correct string datetime format
@@ -185,7 +185,7 @@ namespace MarquitoUtils.Main.Class.Tools
             // Serialize object
             string objToString = GetSerializedObject(obj);
             // Convert oject to bytes
-            return Encoding.ASCII.GetBytes(objToString);
+            return Encoding.UTF8.GetBytes(objToString);
         }
 
         public static T ByteArrayToObject<T>(byte[] byteArray)
@@ -199,7 +199,7 @@ namespace MarquitoUtils.Main.Class.Tools
             return (T)bf.Deserialize(ms);*/
 
             // Convert bytes to object
-            string stringObj = Encoding.ASCII.GetString(byteArray);
+            string stringObj = Encoding.UTF8.GetString(byteArray);
             // Deserialize bytes to object
             return GetDeserializedObject<T>(stringObj);
         }
@@ -509,5 +509,29 @@ namespace MarquitoUtils.Main.Class.Tools
                 return ms.ToArray();
             }
         }
+
+        public static Stream BytesToStream(byte[] bytes)
+        {
+            return new MemoryStream(bytes);
+        }
+
+        public static bool TypeIsInheritedBy<T1, T2>(T1 typeChild, T2 typeParent)
+            where T1 : Type
+            where T2 : Type
+        {
+            //return TypeIsInheritedBy<T1, T2>();
+            return typeChild.IsSubclassOf(typeParent) || typeChild.IsEquivalentTo(typeParent);
+        }
+
+        /*public static bool TypeIsInheritedBy<T1, T2>()
+            where T1 : Type
+            where T2 : Type
+        {
+            Type typeChild = typeof(T1);
+
+            
+
+            return typeChild.IsSubclassOf(T2) || typeChild.IsEquivalentTo(typeof(T2));
+        }*/
     }
 }

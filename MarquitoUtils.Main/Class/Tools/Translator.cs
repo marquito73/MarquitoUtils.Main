@@ -35,7 +35,7 @@ namespace MarquitoUtils.Main.Class.Tools
 
             List<Translation> translations = new List<Translation>();
 
-            if (Utility.IsNull(translations)) translations = new List<Translation>();
+            if (Utils.IsNull(translations)) translations = new List<Translation>();
             // Loop of each translation of file
             XDocument translationXml = XDocument.Load(translationFilePath);
             foreach (XElement appNode in translationXml.Descendants("Translations"))
@@ -53,7 +53,7 @@ namespace MarquitoUtils.Main.Class.Tools
                         // Construction with the type and the assembly name
                         StringBuilder sbFullCs = new StringBuilder();
                         sbFullCs.Append(clsNode.Attribute("cls").Value).Append(", ");
-                        if (Utility.IsNull(assembly))
+                        if (Utils.IsNull(assembly))
                         {
                             // With the application attribute specified with the node "Translations"
                             sbFullCs.Append(originApp);
@@ -111,7 +111,7 @@ namespace MarquitoUtils.Main.Class.Tools
         {
             //enumLang? lang = (enumLang)AppDataPropManage.getValue((int)enumDataType.LANGUAGE);
             enumLang? lang = enumLang.FR;
-            if (Utility.IsNull(lang))
+            if (Utils.IsNull(lang))
             {
                 lang = defaultLang;
             }
@@ -134,7 +134,7 @@ namespace MarquitoUtils.Main.Class.Tools
                 (List<Translation>)AppDataPropManage.getValue((int)enumDataType.TRANSLATION_LIST);*/
             List<Translation> translations = new List<Translation>();
             // Loop in translations for find the correct translation
-            if (!Utility.IsNull(translations))
+            if (!Utils.IsNull(translations))
             {
                 foreach (Translation translation in translations)
                 {

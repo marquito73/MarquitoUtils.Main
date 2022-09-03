@@ -110,6 +110,21 @@ namespace MarquitoUtils.Main.Class.Entities.File
 
         public string GetCompletePathName()
         {
+            return this.GetCompletePathName(this.Extension);
+        }
+
+        public string GetCompletePathName(string extension)
+        {
+            StringBuilder sbCompletePath = new StringBuilder();
+
+            sbCompletePath.Append(this.FilePath)
+                .Append(this.FileName).Append(".").Append(extension);
+
+            return sbCompletePath.ToString();
+        }
+
+        public string GetCompleteNameSpaceAsPathName()
+        {
             StringBuilder sbCompletePath = new StringBuilder();
 
             sbCompletePath.Append(this.GetNameSpaceAsPath()).Append("\\")

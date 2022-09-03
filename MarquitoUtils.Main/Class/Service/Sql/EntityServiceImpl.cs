@@ -21,7 +21,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
 
             List<T> entities = this.GetEntityList<T>();
 
-            if (Utility.IsNotEmpty(entities))
+            if (Utils.IsNotEmpty(entities))
             //if (Utility.IsNotEmpty(this.DbContext.ChangeTracker.Entries()))
             {
                 entity = entities.SingleOrDefault<T>(entity => entity.Id == id);
@@ -38,7 +38,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
 
             List<T> entities = this.GetEntityList<T>();
 
-            if (Utility.IsNotEmpty(entities))
+            if (Utils.IsNotEmpty(entities))
             {
                 entitiesFound = entities.Where(entity => ids.Contains(entity.Id)).ToList();
             }
@@ -60,7 +60,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
             List<T> entities = this.GetEntityList<T>();
 
             //if (Utility.IsNotEmpty(this.DbContext.Set<T>())) 
-            if (Utility.IsNotEmpty(entities))
+            if (Utils.IsNotEmpty(entities))
             {
                 entity = entities.Where(entity => this.MatchUniqueConstraint(entity, constraints))
                     .FirstOrDefault();
@@ -86,8 +86,16 @@ namespace MarquitoUtils.Main.Class.Service.Sql
                 object fieldValue = entity.GetFieldValue(constraint.PropertyName);
                 if (fieldValue is string)
                 {
-                    if (!Utility.GetAsString(fieldValue).Trim()
-                        .Equals(Utility.GetAsString(constraint.Value).Trim()))
+                    string strFieldValueAsString = Utils.GetAsString(fieldValue);
+                    string strConstraintValue = Utils.GetAsString(constraint.Value);
+                    if (!constraint.CaseSensitive)
+                    {
+                        strFieldValueAsString = strFieldValueAsString.ToLower();
+                        strConstraintValue = strConstraintValue.ToLower();
+                    }
+
+                    if (!strFieldValueAsString.Trim()
+                        .Equals(strConstraintValue.Trim()))
                     {
                         matchConstraints = false;
                         break;
@@ -105,14 +113,14 @@ namespace MarquitoUtils.Main.Class.Service.Sql
 
         public void PersistEntity<T>(T entity) where T : Entity, IEntity
         {
-            if (Utility.IsNotNull(entity.Id))
+            if (Utils.IsNotNull(entity.Id))
             {
                 int newId = 1;
 
                 List<T> entities = this.GetEntityList<T>();
 
                 //if (Utility.IsNotEmpty(this.DbContext.Set<T>()))
-                if (Utility.IsNotEmpty(entities))
+                if (Utils.IsNotEmpty(entities))
                 {
 
                     newId = entities.Max(entity => entity.Id) + 1;
@@ -127,27 +135,64 @@ namespace MarquitoUtils.Main.Class.Service.Sql
 
         public List<T> GetEntityList<T>() where T : Entity, IEntity
         {
+            return this.GetEntityList<T>(new List<Func<T, bool>>(), new List<string>());
+        }
+
+        public List<T> GetEntityList<T>(List<Func<T, bool>> filters, List<string> includes) where T : Entity, IEntity
+        {
             List<T> entityList = new List<T>();
 
-            if (Utility.IsNotEmpty(this.DbContext.ChangeTracker.Entries()))
+            if (Utils.IsNotEmpty(this.DbContext.ChangeTracker.Entries()))
             {
                 entityList.AddRange(this.DbContext.ChangeTracker.Entries()
                     .Where(entry => this.MatchEntityType<T>(entry.Entity))
                     .Select(entry => (T)entry.Entity)
+                    .Where(this.ApplyFilters(filters))
                     .ToList());
             }
 
-            if (Utility.IsNotEmpty(this.DbContext.Set<T>().ToList()))
+            if (Utils.IsNotEmpty(this.DbContext.Set<T>().ToList()))
             {
-                entityList.AddRange(this.DbContext.Set<T>().ToList());
+                entityList.AddRange(this.ApplyIncludes(this.DbContext.Set<T>(), includes)
+                    .Where(this.ApplyFilters(filters))
+                    .ToList());
             }
 
             return entityList.Distinct().ToList();
         }
 
+        private Func<T, bool> ApplyFilters<T>(List<Func<T, bool>> filters) where T : Entity, IEntity
+        {
+            return entity =>
+            {
+                bool result = true;
+
+                foreach (Func<T, bool> filter in filters)
+                {
+                    result = filter(entity);
+                    if (!result)
+                    {
+                        break;
+                    }
+                }
+
+                return result;
+            };
+        }
+
+        private IQueryable<T> ApplyIncludes<T>(IQueryable<T> dbSet, List<string> includes) where T : Entity, IEntity
+        {
+            foreach (string include in includes)
+            {
+                dbSet = dbSet.Include(include);
+            }
+
+            return dbSet;
+        }
+
         public void RemoveEntity<T>(T entity) where T : Entity, IEntity
         {
-            if (Utility.IsNotEmpty(this.DbContext.Set<T>()))
+            if (Utils.IsNotEmpty(this.DbContext.Set<T>()))
             {
                 this.DbContext.Set<T>().Remove(entity);
             }

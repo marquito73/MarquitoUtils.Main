@@ -10,11 +10,13 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
     {
         public string PropertyName { get; private set; }
         public object Value { get; private set; }
+        public bool CaseSensitive { get; private set; }
 
-        public PropertyConstraint(string propertyName, object value)
+        public PropertyConstraint(string propertyName, object value, bool caseSensitive = true)
         {
             this.PropertyName = propertyName;
             this.Value = value;
+            this.CaseSensitive = caseSensitive;
         }
     }
 }

@@ -37,7 +37,7 @@ namespace MarquitoUtils.Main.Class.Tools
             {
                 if (!paramLine.Substring(0,2).Equals("--"))
                 {
-                    Parameter parameter = Utility.GetAsParameter(paramLine, separator);
+                    Parameter parameter = Utils.GetAsParameter(paramLine, separator);
                     parameters.Add(parameter);
                 }
             }
@@ -53,7 +53,7 @@ namespace MarquitoUtils.Main.Class.Tools
         {
             //List<Parameter> parameters = (List<Parameter>) AppDataPropManage.getValue((int) enumDataType.CONF_PARAM_LIST);
             List<Parameter> parameters = new List<Parameter>();
-            if (Utility.IsNull(parameters)) parameters = new List<Parameter>();
+            if (Utils.IsNull(parameters)) parameters = new List<Parameter>();
             return parameters;
         }
 
@@ -76,7 +76,7 @@ namespace MarquitoUtils.Main.Class.Tools
                 }
             }
 
-            if (Utility.IsNull(returnParam)) returnParam = new Parameter(parameterName, "");
+            if (Utils.IsNull(returnParam)) returnParam = new Parameter(parameterName, "");
 
             return returnParam;
         }

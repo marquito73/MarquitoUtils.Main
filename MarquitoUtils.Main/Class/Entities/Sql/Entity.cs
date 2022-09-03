@@ -38,7 +38,7 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
 
             DataTypeAttribute attribute = this.GetPropertyInfo(fieldName).GetCustomAttribute<DataTypeAttribute>();
 
-            if (Utility.IsNotNull(attribute))
+            if (Utils.IsNotNull(attribute))
             {
                 dataType = attribute.DataType;
             }
@@ -53,14 +53,14 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
 
         public string GetTableName()
         {
-            return Utility.GetAsString(this.GetType().GetCustomAttributesData()
+            return Utils.GetAsString(this.GetType().GetCustomAttributesData()
                 .Where(attr => attr.AttributeType.IsAssignableFrom(typeof(TableAttribute)))
                 .ToList().First().ConstructorArguments.First().Value);
         }
 
         public Guid GetEntityIdentityCode()
         {
-            return Utility.GetIdentityCode(this);
+            return Utils.GetIdentityCode(this);
         }
 
         public EnumContentType GetContentType(string columnName)

@@ -121,10 +121,10 @@ namespace MarquitoUtils.Main.Class.Entities.Action
         private object callMethod(Type actionClass, string classMethodName, List<object> parameters)
         {
             object methodReturnVal = null;
-            if (!Utility.IsNull(actionClass) && !Utility.IsNullOrEmpty(classMethodName))
+            if (!Utils.IsNull(actionClass) && !Utils.IsNullOrEmpty(classMethodName))
             {
                 MethodInfo serviceThreadMethod = null;
-                if (!Utility.IsNull(parameters) && parameters.Count > 0)
+                if (!Utils.IsNull(parameters) && parameters.Count > 0)
                 {
                     List<Type> types = new List<Type>();
                     foreach (object param in parameters)

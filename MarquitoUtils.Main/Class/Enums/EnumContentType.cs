@@ -1,15 +1,19 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace MarquitoUtils.Main.Class.Enums
 {
-    public class EnumContentType
+    public class EnumContentTypeAttr : EnumClass
     {
         public string CssClass { get; private set; } = "";
 
-        private EnumContentType(string cssClass)
+        public EnumContentTypeAttr(string cssClass)
         {
             this.CssClass = cssClass;
         }
@@ -18,69 +22,46 @@ namespace MarquitoUtils.Main.Class.Enums
         {
             return "grid_" + this.CssClass;
         }
+    }
 
-        public static EnumContentType Text
+    public static class EnumContentTypes
+    {
+        public static EnumContentTypeAttr Attr(this EnumContentType contentType)
         {
-            get
-            {
-                return new EnumContentType("content_text");
-            }
+            return EnumUtils.GetAttr<EnumContentTypeAttr, EnumContentType>(contentType);
         }
 
-        public static EnumContentType Password
+        public static string GetCssClass(this EnumContentType contentType)
         {
-            get
-            {
-                return new EnumContentType("content_password");
-            }
+            EnumContentTypeAttr contentTypeAttr 
+                = EnumUtils.GetAttr<EnumContentTypeAttr, EnumContentType>(contentType);
+            return Attr(contentType).CssClass;
         }
 
-        public static EnumContentType EmailAddress
+        public static string GetGridCssClass(this EnumContentType contentType)
         {
-            get
-            {
-                return new EnumContentType("content_emailaddress");
-            }
+            return "grid_" + GetCssClass(contentType);
         }
+    }
 
-        public static EnumContentType PhoneNumber
-        {
-            get
-            {
-                return new EnumContentType("content_phonenumber");
-            }
-        }
-
-        public static EnumContentType Number
-        {
-            get
-            {
-                return new EnumContentType("content_number");
-            }
-        }
-
-        public static EnumContentType Currency
-        {
-            get
-            {
-                return new EnumContentType("content_currency");
-            }
-        }
-
-        public static EnumContentType Boolean
-        {
-            get
-            {
-                return new EnumContentType("content_boolean");
-            }
-        }
-
-        public static EnumContentType Binary
-        {
-            get
-            {
-                return new EnumContentType("content_binary");
-            }
-        }
+    [DataContract]
+    public enum EnumContentType
+    {
+        [EnumMember]
+        [EnumContentTypeAttr("content_text")] Text,
+        [EnumMember]
+        [EnumContentTypeAttr("content_password")] Password,
+        [EnumMember]
+        [EnumContentTypeAttr("content_emailaddress")] EmailAddress,
+        [EnumMember]
+        [EnumContentTypeAttr("content_phonenumber")] PhoneNumber,
+        [EnumMember]
+        [EnumContentTypeAttr("content_number")] Number,
+        [EnumMember]
+        [EnumContentTypeAttr("content_currency")] Currency,
+        [EnumMember]
+        [EnumContentTypeAttr("content_boolean")] Boolean,
+        [EnumMember]
+        [EnumContentTypeAttr("content_binary")] Binary
     }
 }

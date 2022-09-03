@@ -42,11 +42,11 @@ namespace MarquitoUtils.Main.Class.Service.General
         public bool startThread(Type serviceType, string serviceMethodName, ApartmentState threadType, List<object> parameters)
         {
             bool state = false;
-            if (!Utility.IsNull(serviceType) && !Utility.IsNullOrEmpty(serviceMethodName))
+            if (!Utils.IsNull(serviceType) && !Utils.IsNullOrEmpty(serviceMethodName))
             {
                 MethodInfo serviceThreadMethod = null;
                 Thread serviceThread = null;
-                if (!Utility.IsNull(parameters) && parameters.Count > 0)
+                if (!Utils.IsNull(parameters) && parameters.Count > 0)
                 {
                     List<Type> types = new List<Type>();
                     foreach (object param in parameters)
@@ -68,7 +68,7 @@ namespace MarquitoUtils.Main.Class.Service.General
                 serviceThread.Start();
                 //List<ThreadContext> lstThread = (List<ThreadContext>)AppDataPropManage.getValue((int)enumDataType.THREAD_LIST);
                 List<ThreadContext> lstThread = new List<ThreadContext>();
-                if (Utility.IsNull(lstThread))
+                if (Utils.IsNull(lstThread))
                 {
                     lstThread = new List<ThreadContext>();
                 }

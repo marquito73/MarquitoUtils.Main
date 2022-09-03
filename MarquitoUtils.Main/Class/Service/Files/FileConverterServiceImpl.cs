@@ -3,6 +3,7 @@ using MarquitoUtils.Main.Class.Service.General;
 using MarquitoUtils.Main.Class.Tools;
 using MediaToolkit;
 using MediaToolkit.Model;
+using Microsoft.WindowsAPICodePack.Shell;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,9 +25,9 @@ namespace MarquitoUtils.Main.Class.Service.Files
             byte[] audioBytes;
 
             // The video file complete path
-            string videoCompletePath = videoFile.FilePath + videoFile.FileName + "." + videoFile.Extension;
+            string videoCompletePath = videoFile.GetCompletePathName();
             // The music file complete path
-            string musicCompletePath = videoFile.FilePath + videoFile.FileName + "." + destExtension;
+            string musicCompletePath = videoFile.GetCompletePathName(destExtension);
 
             // Create the video file
             this.CreateFile(videoFile);
@@ -53,6 +54,11 @@ namespace MarquitoUtils.Main.Class.Service.Files
             // Delete the temp directory
             Directory.Delete(videoFile.FilePath);
 
+            // Test
+            /*TagFile file = new TagFile(videoFile.FileName + "." + destExtension, 
+                Utils.BytesToStream(audioBytes));
+            this.SetMusicProperties(file, fileProperties);*/
+
             return audioBytes;
         }
 
@@ -71,13 +77,13 @@ namespace MarquitoUtils.Main.Class.Service.Files
             file.Tag.Artists = fileProperties.Feats.ToArray();
             // Music genres
             file.Tag.Genres = fileProperties.Albums.ToArray();
-            if (Utility.IsNotNull(fileProperties.ReleaseDate))
+            if (Utils.IsNotNull(fileProperties.ReleaseDate))
             {
                 // Release date
                 file.Tag.Year = (uint)fileProperties.ReleaseDate.Value.Year;
             }
             // The thumbnail url for this music
-            if (Utility.IsNotEmpty(fileProperties.ThumbnailUrl)) 
+            if (Utils.IsNotEmpty(fileProperties.ThumbnailUrl)) 
             {
                 TagLib.Id3v2.AttachmentFrame cover = new TagLib.Id3v2.AttachmentFrame
                 {
@@ -91,6 +97,49 @@ namespace MarquitoUtils.Main.Class.Service.Files
                 file.Tag.Pictures = new TagLib.IPicture[] { cover };
             }
 
+            file.Save();
+        }
+
+        public void Test()
+        {
+            /*var file = ShellFile.FromFilePath(filePath);
+            ShellFile.*/
+        }
+
+        public void SetMusicProperties(TagFile tagFile, MusicFileProperties fileProperties)
+        {
+            TagLib.Id3v2.Tag.DefaultVersion = 3;
+            TagLib.Id3v2.Tag.ForceDefaultVersion = true;
+
+
+            TagLib.File file = TagLib.File.Create(tagFile);
+            // Music name
+            file.Tag.Title = fileProperties.MusicName;
+            // Main artist
+            file.Tag.AlbumArtists = fileProperties.Artists.ToArray();
+            // Others artists
+            file.Tag.Artists = fileProperties.Feats.ToArray();
+            // Music genres
+            file.Tag.Genres = fileProperties.Albums.ToArray();
+            if (Utils.IsNotNull(fileProperties.ReleaseDate))
+            {
+                // Release date
+                file.Tag.Year = (uint)fileProperties.ReleaseDate.Value.Year;
+            }
+            // The thumbnail url for this music
+            if (Utils.IsNotEmpty(fileProperties.ThumbnailUrl))
+            {
+                TagLib.Id3v2.AttachmentFrame cover = new TagLib.Id3v2.AttachmentFrame
+                {
+                    Type = TagLib.PictureType.FrontCover,
+                    Description = "Cover",
+                    MimeType = System.Net.Mime.MediaTypeNames.Image.Jpeg,
+                    Data = this.DownloadFileBytesFromUrl(fileProperties.ThumbnailUrl),
+                    TextEncoding = TagLib.StringType.UTF16
+
+                };
+                file.Tag.Pictures = new TagLib.IPicture[] { cover };
+            }
             file.Save();
         }
 

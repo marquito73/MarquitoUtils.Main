@@ -22,7 +22,7 @@ namespace MarquitoUtils.Main.Class.Service.Communication
                     pipeClient.Connect();
                     using (StreamWriter sw = new StreamWriter(pipeClient))
                     {
-                        string jsonData = Utility.GetSerializedObject(pipelineData.DataObject);
+                        string jsonData = Utils.GetSerializedObject(pipelineData.DataObject);
 
                         sw.AutoFlush = true;
                         sw.WriteLine(pipelineData.DataObject);
