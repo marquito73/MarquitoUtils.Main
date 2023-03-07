@@ -62,6 +62,10 @@ namespace MarquitoUtils.Main.Class.Enums
         [EnumMember]
         [EnumContentTypeAttr("content_boolean")] Boolean,
         [EnumMember]
-        [EnumContentTypeAttr("content_binary")] Binary
+        [EnumContentTypeAttr("content_binary")] Binary,
+        [EnumMember]
+        [EnumContentTypeAttr("content_date")] Date,
+        [EnumMember]
+        [EnumContentTypeAttr("content_time")] Time
     }
 }
