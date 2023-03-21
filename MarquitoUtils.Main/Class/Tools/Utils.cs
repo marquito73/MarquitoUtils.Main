@@ -283,6 +283,20 @@ namespace MarquitoUtils.Main.Class.Tools
         }
 
         /// <summary>
+        /// Can convert Enum to integer
+        /// </summary>
+        /// <param name="data">Enum data</param>
+        /// <returns>Double converted to integer</returns>
+        public static int GetAsInteger(Enum data)
+        {
+            int iReturn = 0;
+
+            iReturn = Convert.ToInt32(data);
+
+            return iReturn;
+        }
+
+        /// <summary>
         /// Can convert string to long
         /// </summary>
         /// <param name="data">String data</param>
