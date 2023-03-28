@@ -138,12 +138,12 @@ namespace MarquitoUtils.Main.Class.Tools
             {
                 foreach (Translation translation in translations)
                 {
-                    if (translation.Cls.Equals(cls)
-                        && translation.Label.Equals(label)
-                        && translation.Lang.Equals(lang)
+                    if (translation.Class.Equals(cls)
+                        && translation.TranslationKey.Equals(label)
+                        && translation.Language.Equals(lang)
                         && translation.OriginApp.Equals(originApp))
                     {
-                        labelTranslation = translation.LabelTranslation;
+                        labelTranslation = translation.TranslationValue;
                         break;
                     }
                 }

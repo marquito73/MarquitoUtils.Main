@@ -15,35 +15,36 @@ namespace MarquitoUtils.Main.Class.Entities.Translation
         /// <summary>
         /// Language of translation
         /// </summary>
-        public enumLang Lang { get; set; }
+        public enumLang Language { get; set; }
 
         /// <summary>
         /// Class of translation
         /// </summary>
-        public Type Cls { get; set; }
+        public Type Class { get; set; }
 
         /// <summary>
-        /// The label to translate
+        /// The translation key
         /// </summary>
-        public string Label { get; set; }
+        public string TranslationKey { get; set; }
 
         /// <summary>
         /// The label translation
         /// </summary>
-        public string LabelTranslation { get; set; }
+        public string TranslationValue { get; set; }
 
         public Translation()
         {
 
         }
 
-        public Translation(string originApp, enumLang lang, Type cls, string label, string labelTranslation)
+        public Translation(string originApp, enumLang language, Type cls, 
+            string translationKey, string translationValue)
         {
             this.OriginApp = originApp;
-            this.Lang = lang;
-            this.Cls = cls;
-            this.Label = label;
-            this.LabelTranslation = labelTranslation;
+            this.Language = language;
+            this.Class = cls;
+            this.TranslationKey = translationKey;
+            this.TranslationValue = translationValue;
         }
     }
 }
