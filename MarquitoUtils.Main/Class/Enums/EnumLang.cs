@@ -16,8 +16,14 @@ namespace MarquitoUtils.Main.Class.Enums
         /// </summary>
         public enum enumLang
         {
-            FR,
-            EN
+            /// <summary>
+            /// English
+            /// </summary>
+            EN,
+            /// <summary>
+            /// French
+            /// </summary>
+            FR
         }
     }
 }

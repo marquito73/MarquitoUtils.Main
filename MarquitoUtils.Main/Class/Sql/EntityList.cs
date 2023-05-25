@@ -10,48 +10,94 @@ using System.Threading.Tasks;
 
 namespace MarquitoUtils.Main.Class.Sql
 {
+    /// <summary>
+    /// Entity list, can be inherited by entity list with specific entity type
+    /// </summary>
+    /// <typeparam name="T">Entity type</typeparam>
     public abstract class EntityList<T> where T : Entity, IEntity
     {
-        protected DbContext DbContext { get; set; }
-
+        /// <summary>
+        /// The database context
+        /// </summary>
+        protected DefaultDbContext DbContext { get; set; }
+        /// <summary>
+        /// Filters
+        /// </summary>
         private List<Func<T, bool>> Filters { get; set; } = new List<Func<T, bool>>();
-
+        /// <summary>
+        /// Includes
+        /// </summary>
         protected List<string> Includes { get; private set; } = new List<string>();
 
-        public EntityList(DbContext dbContext)
+        /// <summary>
+        /// Entity list, can be inherited by entity list with specific entity type
+        /// </summary>
+        /// <param name="dbContext">The database context</param>
+        public EntityList(DefaultDbContext dbContext)
         {
             this.DbContext = dbContext;
         }
 
-        public List<T> GetEntityList()
+        /// <summary>
+        /// Get list of entities
+        /// </summary>
+        /// <returns>Entities</returns>
+        public IEnumerable<T> GetEntityList()
         {
             return this.GetEntityService().GetEntityList(this.Filters, this.Includes);
         }
 
+        /// <summary>
+        /// Add equal filter
+        /// </summary>
+        /// <param name="propertyName">Property name</param>
+        /// <param name="propertyValue">Property value</param>
         protected void AddEqualFilter(string propertyName, object propertyValue)
         {
             Func<T, bool> equalFilter = this.GetFilter(propertyName, propertyValue, FilterType.IS_EQUAL);
             this.Filters.Add(equalFilter);
         }
 
+        /// <summary>
+        /// Add not equal filter
+        /// </summary>
+        /// <param name="propertyName">Property name</param>
+        /// <param name="propertyValue">Property value</param>
         protected void AddNotEqualFilter(string propertyName, object propertyValue)
         {
             Func<T, bool> notEqualFilter = this.GetFilter(propertyName, propertyValue, FilterType.IS_NOT_EQUAL);
             this.Filters.Add(notEqualFilter);
         }
 
+        /// <summary>
+        /// Add in filter
+        /// </summary>
+        /// <param name="propertyName">Property name</param>
+        /// <param name="propertyValues">The values contain the value of property</param>
         protected void AddInFilter(string propertyName, List<object> propertyValues)
         {
             Func<T, bool> inFilter = this.GetFilter(propertyName, propertyValues, FilterType.IS_IN);
             this.Filters.Add(inFilter);
         }
 
+        /// <summary>
+        /// Add not in filter
+        /// </summary>
+        /// <param name="propertyName">Property name</param>
+        /// <param name="propertyValues">The values doesn't contain the value of property</param>
         protected void AddNotInFilter(string propertyName, List<object> propertyValues)
         {
             Func<T, bool> notInFilter = this.GetFilter(propertyName, propertyValues, FilterType.IS_NOT_IN);
             this.Filters.Add(notInFilter);
         }
 
+        /// <summary>
+        /// Add like filter
+        /// </summary>
+        /// <param name="propertyName">Property name</param>
+        /// <param name="propertyLikeValue">The property like value</param>
+        /// <param name="likeType">Start with, like, or end with</param>
+        /// <param name="isCaseSensitive">Is case sensitive ?</param>
         protected void AddLikeFilter(string propertyName, string propertyLikeValue, LikeType likeType, 
             bool isCaseSensitive)
         {
@@ -228,9 +274,9 @@ namespace MarquitoUtils.Main.Class.Sql
         /// </summary>
         /// <returns>Entity service</returns>
         /// <exception cref="Exception">Exception if the DbContext of the entitylist is null</exception>
-        private EntityService GetEntityService()
+        private IEntityService GetEntityService()
         {
-            EntityService entityService = new EntityServiceImpl();
+            IEntityService entityService = new EntityService();
 
             if (Utils.IsNotNull(this.DbContext))
             {
@@ -249,8 +295,17 @@ namespace MarquitoUtils.Main.Class.Sql
         /// </summary>
         public enum LikeType
         {
+            /// <summary>
+            /// Contain
+            /// </summary>
             CONTAIN,
+            /// <summary>
+            /// Start with
+            /// </summary>
             START_WITH,
+            /// <summary>
+            /// End with
+            /// </summary>
             END_WITH
         }
 
@@ -259,10 +314,25 @@ namespace MarquitoUtils.Main.Class.Sql
         /// </summary>
         public enum FilterType
         {
+            /// <summary>
+            /// Is equal to
+            /// </summary>
             IS_EQUAL,
+            /// <summary>
+            /// Is not equal to
+            /// </summary>
             IS_NOT_EQUAL,
+            /// <summary>
+            /// Is in list of values
+            /// </summary>
             IS_IN,
+            /// <summary>
+            /// Isn't in list of values
+            /// </summary>
             IS_NOT_IN,
+            /// <summary>
+            /// Is like
+            /// </summary>
             IS_LIKE
         }
     }

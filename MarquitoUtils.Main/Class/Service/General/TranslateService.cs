@@ -1,6 +1,8 @@
 ﻿using MarquitoUtils.Main.Class.Entities.Translation;
 using MarquitoUtils.Main.Class.Enums;
+using MarquitoUtils.Main.Class.Logger;
 using MarquitoUtils.Main.Class.Tools;
+using System.Globalization;
 using System.Reflection;
 using System.Text;
 using System.Xml.Linq;
@@ -13,11 +15,24 @@ namespace MarquitoUtils.Main.Class.Service.General
     /// </summary>
     public class TranslateService : ITranslateService
     {
+        /// <summary>
+        /// Translations
+        /// </summary>
         private List<Translation> Translations { get; set; } = new List<Translation>();
 
         public TranslateService(List<Translation> Translations)
         {
             this.Translations = Translations;
+        }
+
+        public enumLang GetLanguageWithCultureInfo(CultureInfo culture)
+        {
+            string languageISOcode = culture.TwoLetterISOLanguageName;
+
+            return Enum.GetValues(typeof(enumLang))
+                .Cast<enumLang>()
+                .Where(lang => lang.ToString().ToUpper().Equals(languageISOcode.ToUpper()))
+                .FirstOrDefault(enumLang.EN);
         }
 
         public string GetTranslation<T>(string translationKey) where T : class

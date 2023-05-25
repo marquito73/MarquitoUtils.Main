@@ -110,6 +110,21 @@ namespace MarquitoUtils.Main.Class.Tools
         }
 
         /// <summary>
+        /// Return the list, or an empty list if list is null
+        /// </summary>
+        /// <typeparam name="T">The type of list</typeparam>
+        /// <param name="genericList">The list</param>
+        /// <returns>The list, or an empty list if list is null</returns>
+        public static List<T> Nvl<T>(List<T> genericList) where T : class
+        {
+            if (IsNull(genericList))
+            {
+                genericList = new List<T>();
+            }
+            return genericList;
+        }
+
+        /// <summary>
         /// Return true if two strings equal ignore case
         /// </summary>
         /// <param name="strOne">First string</param>
@@ -537,15 +552,15 @@ namespace MarquitoUtils.Main.Class.Tools
             return typeChild.IsSubclassOf(typeParent) || typeChild.IsEquivalentTo(typeParent);
         }
 
-        /*public static bool TypeIsInheritedBy<T1, T2>()
-            where T1 : Type
-            where T2 : Type
+        /// <summary>
+        /// Split string to list of strings
+        /// </summary>
+        /// <param name="originString">The string to split</param>
+        /// <param name="separator">The separator for split</param>
+        /// <returns></returns>
+        public static List<string> Split(string originString, string separator)
         {
-            Type typeChild = typeof(T1);
-
-            
-
-            return typeChild.IsSubclassOf(T2) || typeChild.IsEquivalentTo(typeof(T2));
-        }*/
+            return originString.Split(separator).ToList();
+        }
     }
 }
