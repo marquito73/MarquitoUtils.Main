@@ -1,10 +1,5 @@
 ﻿using MarquitoUtils.Main.Class.Entities.File;
-using MarquitoUtils.Main.Class.Enums;
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace MarquitoUtils.Main.Class.Tools
 {
@@ -176,6 +171,18 @@ namespace MarquitoUtils.Main.Class.Tools
             }
 
             return fileNotInExcludedFiles;
+        }
+
+        /// <summary>
+        /// Return relative path of class
+        /// </summary>
+        /// <param name="type">The class</param>
+        /// <param name="strIndex">The string we search index of, for relative path</param>
+        /// <param name="length">The length</param>
+        /// <returns>Relative path of class</returns>
+        public static string GetRelativePathOfClass(Type type, string strIndex, int length = 1)
+        {
+            return type.FullName.Substring(type.FullName.IndexOf(strIndex) + length).Replace(".", "/");
         }
     }
 }
