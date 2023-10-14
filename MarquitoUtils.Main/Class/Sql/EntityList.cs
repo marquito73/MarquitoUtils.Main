@@ -1,13 +1,6 @@
 ﻿using MarquitoUtils.Main.Class.Entities.Sql;
 using MarquitoUtils.Main.Class.Service.Sql;
 using MarquitoUtils.Main.Class.Tools;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace MarquitoUtils.Main.Class.Sql
 {
     /// <summary>
@@ -27,7 +20,7 @@ namespace MarquitoUtils.Main.Class.Sql
         /// <summary>
         /// Includes
         /// </summary>
-        protected List<string> Includes { get; private set; } = new List<string>();
+        protected ISet<string> Includes { get; private set; } = new HashSet<string>();
 
         /// <summary>
         /// Entity list, can be inherited by entity list with specific entity type
@@ -36,6 +29,14 @@ namespace MarquitoUtils.Main.Class.Sql
         public EntityList(DefaultDbContext dbContext)
         {
             this.DbContext = dbContext;
+
+            // Get list properties, and includes data
+            typeof(T).GetProperties()
+                .Where(prop => Utils.IsGenericCollectionType(prop.PropertyType)).ToList()
+                .ForEach(prop =>
+                {
+                    this.Includes.Add(prop.Name);
+                });
         }
 
         /// <summary>
@@ -50,9 +51,10 @@ namespace MarquitoUtils.Main.Class.Sql
         /// <summary>
         /// Add equal filter
         /// </summary>
+        /// <typeparam name="TProperty">Property type</typeparam>
         /// <param name="propertyName">Property name</param>
         /// <param name="propertyValue">Property value</param>
-        protected void AddEqualFilter(string propertyName, object propertyValue)
+        protected void AddEqualFilter<TProperty>(string propertyName, TProperty propertyValue)
         {
             Func<T, bool> equalFilter = this.GetFilter(propertyName, propertyValue, FilterType.IS_EQUAL);
             this.Filters.Add(equalFilter);
@@ -61,9 +63,10 @@ namespace MarquitoUtils.Main.Class.Sql
         /// <summary>
         /// Add not equal filter
         /// </summary>
+        /// <typeparam name="TProperty">Property type</typeparam>
         /// <param name="propertyName">Property name</param>
         /// <param name="propertyValue">Property value</param>
-        protected void AddNotEqualFilter(string propertyName, object propertyValue)
+        protected void AddNotEqualFilter<TProperty>(string propertyName, TProperty propertyValue)
         {
             Func<T, bool> notEqualFilter = this.GetFilter(propertyName, propertyValue, FilterType.IS_NOT_EQUAL);
             this.Filters.Add(notEqualFilter);
@@ -72,22 +75,26 @@ namespace MarquitoUtils.Main.Class.Sql
         /// <summary>
         /// Add in filter
         /// </summary>
+        /// <typeparam name="TProperty">Properties type</typeparam>
         /// <param name="propertyName">Property name</param>
         /// <param name="propertyValues">The values contain the value of property</param>
-        protected void AddInFilter(string propertyName, List<object> propertyValues)
+        protected void AddInFilter<TProperty>(string propertyName, IEnumerable<TProperty> propertyValues)
         {
-            Func<T, bool> inFilter = this.GetFilter(propertyName, propertyValues, FilterType.IS_IN);
+            Func<T, bool> inFilter = this.GetFilter(propertyName, propertyValues.Select(val => (object) val)
+                .ToList(), FilterType.IS_IN);
             this.Filters.Add(inFilter);
         }
 
         /// <summary>
         /// Add not in filter
         /// </summary>
+        /// <typeparam name="TProperty">Properties type</typeparam>
         /// <param name="propertyName">Property name</param>
         /// <param name="propertyValues">The values doesn't contain the value of property</param>
-        protected void AddNotInFilter(string propertyName, List<object> propertyValues)
+        protected void AddNotInFilter<TProperty>(string propertyName, IEnumerable<TProperty> propertyValues)
         {
-            Func<T, bool> notInFilter = this.GetFilter(propertyName, propertyValues, FilterType.IS_NOT_IN);
+            Func<T, bool> notInFilter = this.GetFilter(propertyName, propertyValues.Select(val => (object)val)
+                .ToList(), FilterType.IS_NOT_IN);
             this.Filters.Add(notInFilter);
         }
 

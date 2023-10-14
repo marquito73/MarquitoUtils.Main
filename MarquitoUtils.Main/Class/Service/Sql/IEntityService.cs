@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MarquitoUtils.Main.Class.Entities.Sql;
+﻿using MarquitoUtils.Main.Class.Entities.Sql;
 using MarquitoUtils.Main.Class.Service.General;
 using MarquitoUtils.Main.Class.Sql;
-using Microsoft.EntityFrameworkCore;
 
 namespace MarquitoUtils.Main.Class.Service.Sql
 {
@@ -89,7 +83,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// <param name="filters">Filters</param>
         /// <param name="includes">Includes</param>
         /// <returns>Entities of specific entity type</returns>
-        public List<T> GetEntityList<T>(List<Func<T, bool>> filters, List<string> includes) 
+        public List<T> GetEntityList<T>(List<Func<T, bool>> filters, ISet<string> includes) 
             where T : Entity, IEntity;
 
         /// <summary>

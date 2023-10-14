@@ -1,10 +1,6 @@
 ﻿using MarquitoUtils.Main.Class.Entities.Sql;
+using MarquitoUtils.Main.Class.Tools;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MarquitoUtils.Main.Class.Sql
 {
@@ -43,7 +39,8 @@ namespace MarquitoUtils.Main.Class.Sql
         /// <typeparam name="DB">The database context type</typeparam>
         /// <param name="sqlBuilder">Sql connection builder</param>
         /// <returns>The database context</returns>
-        public static DB GetDbContext<DB>(SqlConnectionBuilder sqlBuilder) where DB : DefaultDbContext
+        public static DB GetDbContext<DB>(SqlConnectionBuilder sqlBuilder) 
+            where DB : DefaultDbContext
         {
             DbContextOptionsBuilder contextBuilder = new DbContextOptionsBuilder<DB>();
             contextBuilder.UseSqlServer(sqlBuilder.GetConnectionString());

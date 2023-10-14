@@ -2,19 +2,20 @@
 using MarquitoUtils.Main.Class.Sql;
 using MarquitoUtils.Main.Class.Tools;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MarquitoUtils.Main.Class.Service.Sql
 {
+    /// <summary>
+    /// Entity service, for get, update, insert or delete entities
+    /// </summary>
     public class EntityService : IEntityService
     {
+        /// <summary>
+        /// Db context of the Entity service
+        /// </summary>
         public DefaultDbContext DbContext { get; set; }
+
         public T FindEntityById<T>(int id) 
             where T : Entity, IEntity
         {
@@ -69,6 +70,12 @@ namespace MarquitoUtils.Main.Class.Service.Sql
             return entity;
         }
 
+        /// <summary>
+        /// Entity match the type ?
+        /// </summary>
+        /// <typeparam name="T">The type to match</typeparam>
+        /// <param name="entity">The entity</param>
+        /// <returns>Entity match the type ?</returns>
         private bool MatchEntityType<T>(object entity) where T : Entity, IEntity
         {
             return entity is T;
@@ -131,10 +138,10 @@ namespace MarquitoUtils.Main.Class.Service.Sql
 
         public List<T> GetEntityList<T>() where T : Entity, IEntity
         {
-            return this.GetEntityList<T>(new List<Func<T, bool>>(), new List<string>());
+            return this.GetEntityList<T>(new List<Func<T, bool>>(), new HashSet<string>());
         }
 
-        public List<T> GetEntityList<T>(List<Func<T, bool>> filters, List<string> includes) where T : Entity, IEntity
+        public List<T> GetEntityList<T>(List<Func<T, bool>> filters, ISet<string> includes) where T : Entity, IEntity
         {
             List<T> entityList = new List<T>();
 
@@ -189,7 +196,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// <param name="dbSet">The DB set</param>
         /// <param name="includes">Includes</param>
         /// <returns>Function for apply includes</returns>
-        private IQueryable<T> ApplyIncludes<T>(IQueryable<T> dbSet, List<string> includes) where T : Entity, IEntity
+        private IQueryable<T> ApplyIncludes<T>(IQueryable<T> dbSet, ISet<string> includes) where T : Entity, IEntity
         {
             foreach (string include in includes)
             {
