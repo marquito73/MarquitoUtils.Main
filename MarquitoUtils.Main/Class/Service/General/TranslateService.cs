@@ -20,6 +20,11 @@ namespace MarquitoUtils.Main.Class.Service.General
         /// </summary>
         private List<Translation> Translations { get; set; } = new List<Translation>();
 
+        public TranslateService()
+        {
+
+        }
+
         public TranslateService(List<Translation> Translations)
         {
             this.Translations = Translations;
