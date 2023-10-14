@@ -1,13 +1,7 @@
 ﻿using MarquitoUtils.Main.Class.Entities.Image;
 using MarquitoUtils.Main.Class.Entities.Param;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -150,15 +144,10 @@ namespace MarquitoUtils.Main.Class.Tools
         }
 
         /// <summary>
-        /// Return a default object if the object is null
+        /// Return a unique Guid
         /// </summary>
-        /// <param name="obj">The object</param>
-        /// <returns>The result</returns>
-        /*public static List<T> Nvl<T>(List<T> objs) where T : class
-        {
-            return IsNull(objs) ? new List<T>() : objs;
-        }*/
-
+        /// <param name="obj">An object</param>
+        /// <returns>A unique Guid</returns>
         public static Guid GetIdentityCode(object obj)
         {
             MD5 md5 = MD5.Create();
@@ -236,7 +225,18 @@ namespace MarquitoUtils.Main.Class.Tools
         /// <returns>A deserialized object from Json string</returns>
         public static T GetDeserializedObject<T>(string value)
         {
-            return JsonConvert.DeserializeObject<T>(value);
+            T result;
+
+            if (typeof(T).Equals(typeof(string)))
+            {
+                result = (T)Convert.ChangeType(value, typeof(T));
+            }
+            else
+            {
+                result = JsonConvert.DeserializeObject<T>(value);
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -550,6 +550,30 @@ namespace MarquitoUtils.Main.Class.Tools
         {
             //return TypeIsInheritedBy<T1, T2>();
             return typeChild.IsSubclassOf(typeParent) || typeChild.IsEquivalentTo(typeParent);
+        }
+
+        /// <summary>
+        /// Return true if type is a generic list
+        /// </summary>
+        /// <param name="type">The type to check</param>
+        /// <returns>True if type is a generic list</returns>
+        public static bool IsGenericCollectionType(Type type)
+        {
+            return type.IsGenericType && (
+                type.GetGenericTypeDefinition() == typeof(List<>) ||
+                type.GetGenericTypeDefinition() == typeof(ICollection<>));
+        }
+
+        /// <summary>
+        /// Return true if type is a generic set
+        /// </summary>
+        /// <param name="type">The type to check</param>
+        /// <returns>True if type is a generic set</returns>
+        public static bool IsGenericSetType(Type type)
+        {
+            return type.IsGenericType && (
+                type.GetGenericTypeDefinition() == typeof(DbSet<>) ||
+                type.GetGenericTypeDefinition() == typeof(IQueryable<>));
         }
 
         /// <summary>
