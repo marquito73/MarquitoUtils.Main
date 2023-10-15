@@ -5,6 +5,9 @@ using static MarquitoUtils.Main.Class.Enums.EnumLang;
 
 namespace MarquitoUtils.Main.Class.Entities.Translation
 {
+    /// <summary>
+    /// A translation
+    /// </summary>
     public class Translation
     {
         /// <summary>
@@ -21,6 +24,10 @@ namespace MarquitoUtils.Main.Class.Entities.Translation
         /// Class of translation
         /// </summary>
         public Type Class { get; set; }
+        /// <summary>
+        /// Full name of the class for this translation
+        /// </summary>
+        public string ClassFullName { get; set; }
 
         /// <summary>
         /// The translation key
@@ -37,12 +44,22 @@ namespace MarquitoUtils.Main.Class.Entities.Translation
 
         }
 
-        public Translation(string originApp, enumLang language, Type cls, 
+        /// <summary>
+        /// A translation
+        /// </summary>
+        /// <param name="originApp">The origin application for the translations</param>
+        /// <param name="language">Language of translation</param>
+        /// <param name="cls">Class of translation</param>
+        /// <param name="fullClassName">Full name of the class for this translation</param>
+        /// <param name="translationKey">The translation key</param>
+        /// <param name="translationValue">The label translation</param>
+        public Translation(string originApp, enumLang language, Type cls, string fullClassName, 
             string translationKey, string translationValue)
         {
             this.OriginApp = originApp;
             this.Language = language;
             this.Class = cls;
+            this.ClassFullName = fullClassName;
             this.TranslationKey = translationKey;
             this.TranslationValue = translationValue;
         }

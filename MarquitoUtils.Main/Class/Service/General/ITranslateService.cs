@@ -40,6 +40,14 @@ namespace MarquitoUtils.Main.Class.Service.General
             enumLang language) where T : class;
 
         /// <summary>
+        /// Save translations
+        /// </summary>
+        /// <param name="translationFilePath">The translation file path</param>
+        /// <param name="translations">Translations to save</param>
+        /// <param name="applicationName">Application name for the translations</param>
+        public void SaveTranslations(string translationFilePath, List<Translation> translations, string applicationName);
+
+        /// <summary>
         /// Get translations of translation file
         /// </summary>
         /// <param name="translationFilePath">Translation file path</param>
@@ -47,11 +55,18 @@ namespace MarquitoUtils.Main.Class.Service.General
         public List<Translation> GetTranslations(string translationFilePath);
 
         /// <summary>
-        /// Get translations of translation file
+        /// Get translations of translation file in an assembly
         /// </summary>
         /// <param name="translationFilePath">Translation file path</param>
         /// <param name="fileAssembly">The assembly where the file is located</param>
-        /// <returns>Translations of translation file</returns>
+        /// <returns>Translations of translation file in an assembly</returns>
         public List<Translation> GetTranslations(string translationFilePath, Assembly fileAssembly);
+
+        /// <summary>
+        /// Get translations of translation file
+        /// </summary>
+        /// <param name="translationFilePath">Translation file path</param>
+        /// <returns>Translations of translation file</returns>
+        public List<Translation> GetTranslationsFromLocation(string translationFilePath);
     }
 }

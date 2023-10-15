@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using static MarquitoUtils.Main.Class.Enums.EnumLang;
 
 namespace MarquitoUtils.Main.Class.Enums
 {
@@ -14,16 +15,6 @@ namespace MarquitoUtils.Main.Class.Enums
     /// </summary>
     public abstract class EnumClass : Attribute, IEnumAttribute
     {
-
-        /// <summary>
-        /// Get a traduction of an enum
-        /// </summary>
-        /// <param name="enumValue">The enum's name</param>
-        /// <returns></returns>
-        //public static string getEnumTranslation (string enumValue)
-        //{
-        //    return Translation.getTranslation(enumValue);
-        //}
 
         public EnumClass()
         {
@@ -43,9 +34,6 @@ namespace MarquitoUtils.Main.Class.Enums
             // The type of mother enum class
             Type motherType = typeof(T);
             // Assemblies used in the entire project
-            //List<Assembly> assemblies = new List<Assembly> (otherAssemblies);
-            //assemblies.Add(Assembly.GetEntryAssembly());
-            //assemblies.Add(Assembly.GetExecutingAssembly());
             List<Assembly> assemblies = new List<Assembly>();
 
             assemblies.AddRange(AppDomain.CurrentDomain.GetAssemblies().ToList());
@@ -60,66 +48,6 @@ namespace MarquitoUtils.Main.Class.Enums
 
             return inheritedEnumTypes;
         }
-
-        /*public static T GetEnumByName<T>(string name) where T : EnumClass
-        {
-            // The enum
-            T enumValue = null;
-            // The enum sorted map
-            SortedDictionary<string, T> enumMap = GetEnumMap<T>();
-
-            enumValue = enumMap.Where(valPair => valPair.Key == name).First().Value;
-
-            return enumValue;
-        }*/
-
-        /*public static List<T> GetEnumList<T>() where T : EnumClass
-        {
-            // The enum list
-            List<T> enumList = new List<T>();
-            // The enum sorted map
-            SortedDictionary<string, T> enumMap = GetEnumMap<T>();
-
-            enumList = enumMap.Values.ToList();
-
-            return enumList;
-        }
-
-        public static SortedDictionary<string, T> GetEnumMap<T>() where T : EnumClass
-        {
-            // The enum sorted map
-            SortedDictionary<string, T> enumMap = new SortedDictionary<string, T>();
-            // The list of enum class types inherited
-            List<Type> enumTypes = GetInheritedEnumTypes<T>();
-
-            foreach (Type enumType in enumTypes)
-            {
-                // Temp properties enum map
-                Dictionary<string, T> enumMapProperties = enumType
-                    .GetProperties(BindingFlags.Public | BindingFlags.Static)
-                    .Where(p => p.PropertyType.Equals(enumType))
-                    .ToDictionary(p => p.Name, p => (T)p.GetValue(null));
-                // Temp fields enum map
-                Dictionary<string, T> enumMapFields = enumType
-                    .GetFields(BindingFlags.Public | BindingFlags.Static)
-                    .Where(f => f.FieldType.Equals(enumType))
-                    .ToDictionary(f => f.Name, f => (T)f.GetValue(null));
-
-                foreach (KeyValuePair<string, T> enumProperty in enumMapProperties)
-                {
-                    // Add each enum to sorted map
-                    enumMap.Add(enumProperty.Key, enumProperty.Value);
-                }
-
-                foreach (KeyValuePair<string, T> enumField in enumMapFields)
-                {
-                    // Add each enum to sorted map
-                    enumMap.Add(enumField.Key, enumField.Value);
-                }
-            }
-
-            return enumMap;
-        }*/
 
         public static SortedDictionary<string, T> GetEnumMapTest<T>()
             where T : EnumClass
@@ -142,11 +70,6 @@ namespace MarquitoUtils.Main.Class.Enums
                     .Where(f => f.FieldType.Equals(enumType))
                     .ToDictionary(f => f.Name, f => (T)f.GetValue(null));
 
-
-                // Temp enum test map
-                /*Dictionary<string, Enum> keyValuePairs = enumType
-                    .GetCustomAttributes()*/
-
                 var mapTest = enumType
                     .GetCustomAttributes();
 
@@ -166,8 +89,6 @@ namespace MarquitoUtils.Main.Class.Enums
             return enumMap;
         }
 
-        //GetEnumByName<EnumSize>(sizeName)
-
         public static E GetEnumByName<E, A>(string name)
             where E : struct, IConvertible
             where A : EnumClass, IEnumAttribute
@@ -177,9 +98,13 @@ namespace MarquitoUtils.Main.Class.Enums
             // The enum sorted map
             List<E> enumList = GetEnumList<E, A>();
 
-            //enumValue = enumList.Where(e => Enum.Parse(typeof(E), name)).First().Value;
-
             return (E) Enum.Parse(typeof(E), name);
+        }
+
+        public static IEnumerable<E> GetList<E>() 
+            where E : struct, Enum, IConvertible
+        {
+            return Enum.GetValues<E>();
         }
 
         public static List<E> GetEnumList<E, A>()
@@ -198,10 +123,8 @@ namespace MarquitoUtils.Main.Class.Enums
                 .Cast<A>()
                 .First();
 
-
             // The enum sorted map
             SortedDictionary<string, List<Enum>> enumMap = GetEnumMap(attribute);
-
 
             enumList = enumMap.Values
                 .SelectMany(x => x)
@@ -221,7 +144,6 @@ namespace MarquitoUtils.Main.Class.Enums
             where A : EnumClass, IEnumAttribute
         {
             // Returned map of enum class types inherited
-            //List<T> inheritedEnumTypes = new List<T>();
             SortedDictionary<string, List<Enum>> inheritedEnumTypes = new SortedDictionary<string, List<Enum>>();
             // The type of mother enum class
             Type motherType = typeof(Enum);
@@ -254,9 +176,6 @@ namespace MarquitoUtils.Main.Class.Enums
             return inheritedEnumTypes;
         }
 
-
-
-
         /// <summary>
         /// Get all of enums herited of enum class T
         /// </summary>
@@ -286,13 +205,6 @@ namespace MarquitoUtils.Main.Class.Enums
 
             foreach (Assembly assembly in assemblies)
             {
-                /*inheritedEnumTypes.AddRange(assembly.GetTypes()
-                    .Where(t => t.IsSubclassOf(motherType) || t.IsEquivalentTo(motherType))
-                    .Distinct()
-                    .ToList());*/
-
-                //fields[1].CustomAttributes.ToList()[1].AttributeType.Equals(typeof(A))
-
                 string assemblyName = assembly.FullName.ToLower();
 
                 Type enumType = typeof(Enum);
@@ -302,97 +214,15 @@ namespace MarquitoUtils.Main.Class.Enums
                     .Distinct()
                     .ToList();
 
-                string testTemp = "";
-
                 List<Type> testTestEnum = testEnum.Where(e =>
                 {
                     return e.GetFields()
                     .Where(attr => Utils.IsNotNull(attr.GetCustomAttribute<A>()))
                     .Any();
                 }).ToList();
-
-
-
-
-                /*List<T> test = typeof(T)
-                    .GetFields()
-                    .Select(x => new
-                    {
-                        att = x.GetCustomAttributes(false)
-                                     .OfType<A>()
-                                     .FirstOrDefault(),
-                        member = x
-                    })
-                    .Where(x => Utils.IsNotNull(x.att))
-                    .Cast<T>()
-                    .ToList();*/
-
-                //Assembly.GetExecutingAssembly().GetName().Name.Equals(assembly.GetName().Name)
-
-
-                /*typeof(T)
-                    .GetFields()
-                    .Select()*/
             }    
 
             return inheritedEnumTypes;
         }
-
-        /*public static Attribute GetEnumAttribute<E>(this E value)
-            where E : struct, IConvertible
-        {
-            var type = value.GetType();
-            var name = Enum.GetName(type, value);
-            return type.GetField(name)
-                .GetCustomAttributes(false)
-                .OfType<Attribute>()
-                .SingleOrDefault();
-        }
-
-        public static List<string> GetValuesOf<E>()
-            where E : struct, IConvertible
-        {
-            return Enum.GetValues(typeof(E)).Cast<E>()
-                       .Select(val => GetEnumAttribute<E>(val))
-                       .ToList();
-        }*/
-
-        /*public static SortedDictionary<string, T> GetEnumMapTest<T, A>()
-            where T : struct, IConvertible
-            where A : Attribute
-        {
-            // The enum sorted map
-            SortedDictionary<string, T> enumMap = new SortedDictionary<string, T>();
-            // The list of enum class types inherited
-            List<Type> enumTypes = GetInheritedEnumTypesTest<T, A>();
-
-            foreach (Type enumType in enumTypes)
-            {
-                // Temp properties enum map
-                Dictionary<string, T> enumMapProperties = enumType
-                    .GetProperties(BindingFlags.Public | BindingFlags.Static)
-                    .Where(p => p.PropertyType.Equals(enumType))
-                    .ToDictionary(p => p.Name, p => (T)p.GetValue(null));
-                // Temp fields enum map
-                Dictionary<string, T> enumMapFields = enumType
-                    .GetFields(BindingFlags.Public | BindingFlags.Static)
-                    .Where(f => f.FieldType.Equals(enumType))
-                    .ToDictionary(f => f.Name, f => (T)f.GetValue(null));
-
-                foreach (KeyValuePair<string, T> enumProperty in enumMapProperties)
-                {
-                    // Add each enum to sorted map
-                    enumMap.Add(enumProperty.Key, enumProperty.Value);
-                }
-
-                foreach (KeyValuePair<string, T> enumField in enumMapFields)
-                {
-                    // Add each enum to sorted map
-                    enumMap.Add(enumField.Key, enumField.Value);
-                }
-            }
-
-            return enumMap;
-        }*/
     }
 }
