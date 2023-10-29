@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static MarquitoUtils.Main.Class.Enums.EnumLang;
 
 namespace MarquitoUtils.Main.Class.Enums
 {
@@ -24,6 +25,26 @@ namespace MarquitoUtils.Main.Class.Enums
             /// French
             /// </summary>
             FR
+        }
+    }
+
+    public static class EnumLangExtensions
+    {
+        public static string GetIsoCountryCode(this enumLang language)
+        {
+            string isoCountryCode;
+
+            switch (language)
+            {
+                case enumLang.EN:
+                    isoCountryCode = "GB";
+                    break;
+                default:
+                    isoCountryCode = language.ToString();
+                    break;
+            }
+
+            return isoCountryCode;
         }
     }
 }

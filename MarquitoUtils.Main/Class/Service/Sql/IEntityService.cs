@@ -68,6 +68,8 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         public void PersistEntity<T>(T entity) 
             where T : Entity, IEntity;
 
+        public IQueryable GetEntityList(Type T);
+
         /// <summary>
         /// Get entities of specific entity type
         /// </summary>

@@ -1,7 +1,9 @@
 ﻿using MarquitoUtils.Main.Class.Entities.Image;
 using MarquitoUtils.Main.Class.Entities.Param;
+using MarquitoUtils.Main.Class.Entities.Sql;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Data.Entity;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -254,6 +256,11 @@ namespace MarquitoUtils.Main.Class.Tools
             return dReturn;
         }
 
+        public static double GetAsDouble(object data)
+        {
+            return Convert.ToDouble(data);
+        }
+
         /// <summary>
         /// Can convert decimal to double
         /// </summary>
@@ -357,6 +364,11 @@ namespace MarquitoUtils.Main.Class.Tools
             return dtReturn;
         }
 
+        public static DateTime GetAsDateTime(object data)
+        {
+            return Convert.ToDateTime(data);
+        }
+
         /// <summary>
         /// Can convert string to boolean
         /// </summary>
@@ -370,6 +382,11 @@ namespace MarquitoUtils.Main.Class.Tools
             bReturn = Convert.ToBoolean(data);
 
             return bReturn;
+        }
+
+        public static bool GetAsBoolean(object data)
+        {
+            return Convert.ToBoolean(data);
         }
 
         /// <summary>
@@ -572,8 +589,19 @@ namespace MarquitoUtils.Main.Class.Tools
         public static bool IsGenericSetType(Type type)
         {
             return type.IsGenericType && (
-                type.GetGenericTypeDefinition() == typeof(DbSet<>) ||
+                type.GetGenericTypeDefinition() == typeof(Microsoft.EntityFrameworkCore.DbSet<>) ||
                 type.GetGenericTypeDefinition() == typeof(IQueryable<>));
+        }
+
+        public static bool IsGenericDbSetType(Type type)
+        {
+            return IsGenericSetType(type) 
+                && IsAnEntityType(type.GenericTypeArguments[0]);
+        }
+
+        public static bool IsAnEntityType(Type type)
+        {
+            return type.IsSubclassOf(typeof(Entity));
         }
 
         /// <summary>

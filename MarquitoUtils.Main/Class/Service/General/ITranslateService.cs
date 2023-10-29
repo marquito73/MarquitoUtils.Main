@@ -27,7 +27,7 @@ namespace MarquitoUtils.Main.Class.Service.General
         /// <typeparam name="T">The class need the translation</typeparam>
         /// <param name="translationKey">The translation key for translate</param>
         /// <returns>The translation</returns>
-        public string GetTranslation<T>(string translationKey) where T : class;
+        public string GetTranslation<T>(string translationKey);
 
         /// <summary>
         /// Get translation for a class and a translation key
@@ -37,7 +37,7 @@ namespace MarquitoUtils.Main.Class.Service.General
         /// <param name="language">The language for translate</param>
         /// <returns>The translation</returns>
         public string GetTranslation<T>(string translationKey, 
-            enumLang language) where T : class;
+            enumLang language);
 
         /// <summary>
         /// Save translations

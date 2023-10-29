@@ -32,6 +32,11 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
             return this.GetPropertyInfo(fieldName).GetValue(this, null);
         }
 
+        public void SetFieldValue(string fieldName, object value)
+        {
+            this.GetPropertyInfo(fieldName).SetValue(this, value, null);
+        }
+
         public DataType GetDataType(string fieldName)
         {
             DataType dataType = DataType.Custom;

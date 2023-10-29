@@ -40,13 +40,13 @@ namespace MarquitoUtils.Main.Class.Service.General
                 .FirstOrDefault(enumLang.EN);
         }
 
-        public string GetTranslation<T>(string translationKey) where T : class
+        public string GetTranslation<T>(string translationKey)
         {
             return this.GetTranslation<T>(translationKey, enumLang.EN);
         }
 
         public string GetTranslation<T>(string translationKey,
-            enumLang language) where T : class
+            enumLang language)
         {
             string translationFound;
 

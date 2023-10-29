@@ -3,6 +3,7 @@ using MarquitoUtils.Main.Class.Sql;
 using MarquitoUtils.Main.Class.Tools;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Reflection;
 
 namespace MarquitoUtils.Main.Class.Service.Sql
 {
@@ -134,6 +135,21 @@ namespace MarquitoUtils.Main.Class.Service.Sql
 
                 entity.Id = newId;
             }
+        }
+
+        public IQueryable GetEntityList(Type T)
+        {
+            // Get the generic type definition
+            /*MethodInfo method = this.DbContext.GetType().GetMethod(nameof(this.DbContext.Set), 
+                BindingFlags.Public | BindingFlags.Instance);*/
+
+            MethodInfo method = this.DbContext.GetType().GetMethods()
+                .Where(method => method.Name.Equals(nameof(this.DbContext.Set))).First();
+
+            // Build a method with the specific type argument you're interested in
+            method = method.MakeGenericMethod(T);
+
+            return (method.Invoke(this.DbContext, null) as IQueryable);
         }
 
         public List<T> GetEntityList<T>() where T : Entity, IEntity
