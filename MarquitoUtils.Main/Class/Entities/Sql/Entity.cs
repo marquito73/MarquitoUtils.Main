@@ -3,6 +3,7 @@ using MarquitoUtils.Main.Class.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
+using MarquitoUtils.Main.Class.Entities.Sql.Attributes;
 
 namespace MarquitoUtils.Main.Class.Entities.Sql
 {
@@ -11,10 +12,15 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public virtual int Id { get; set; }
+        /// <summary>
+        /// The entity's identity code
+        /// </summary>
+        [NotMapped]
+        public Guid EntityIdentityCode { get; private set; }
 
         public Entity()
         {
-
+            this.EntityIdentityCode = Utils.GetIdentityCode(this);
         }
 
         public PropertyInfo GetPropertyInfo(string fieldName)
@@ -63,9 +69,65 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
                 .ToList().First().ConstructorArguments.First().Value);
         }
 
-        public Guid GetEntityIdentityCode()
+        /// <summary>
+        /// Get property's constraints of this entity
+        /// </summary>
+        /// <param name="getSubEntities">Get property's constraints of sub entities ?</param>
+        /// <returns>Property's constraints of this entity</returns>
+        public IEnumerable<PropertyConstraint> GetPropertyConstraints(bool getSubEntities = true)
         {
-            return Utils.GetIdentityCode(this);
+            // Get required fields
+            List<PropertyConstraint> constraints = this.GetType().GetProperties()
+                .Where(prop => !prop.Name.Equals(nameof(this.Id)))
+                .Where(prop => prop.HasAttribute<ColumnAttribute>())
+                .Where(prop => prop.HasAttribute<RequiredAttribute>())
+                .Where(prop => !prop.HasAttribute<ForeignKeyAttribute>())
+                .Where(prop => prop.HasAttribute<IndexAttribute>())
+                .Select(prop => new PropertyConstraint(this, prop.Name))
+                .ToList();
+            // Get required field of sub entities's required field
+            if (getSubEntities)
+            {
+                this.GetType().GetProperties()
+                    .Where(prop => !prop.Name.Equals(nameof(this.Id)))
+                    .Where(prop => prop.HasAttribute<ColumnAttribute>())
+                    .Where(prop => prop.HasAttribute<RequiredAttribute>() || prop.HasAttribute<DependencyColumnAttribute>())
+                    .Where(prop => prop.HasAttribute<ForeignKeyAttribute>())
+                    .Where(prop =>
+                    {
+                        bool dependentColumnIsValid = true;
+
+                        if (prop.HasAttribute<DependencyColumnAttribute>())
+                        {
+                            DependencyColumnAttribute dependencyColumn = prop.GetCustomAttribute<DependencyColumnAttribute>();
+
+                            dependentColumnIsValid = dependencyColumn.DependentValue
+                                .Equals(this.GetFieldValue(dependencyColumn.ColumnName));
+                        }
+
+                        return dependentColumnIsValid;
+                    })
+                    .Select(prop =>
+                    {
+                        List<PropertyConstraint> subPropertyConstraints = new List<PropertyConstraint>();
+
+                        ForeignKeyAttribute foreignKey = prop.GetCustomAttribute<ForeignKeyAttribute>();
+
+                        Entity subEntity = (Entity)this.GetFieldValue(foreignKey.Name);
+
+                        return subEntity.GetType().GetProperties()
+                            .Where(subProp => !subProp.Name.Equals(nameof(this.Id)))
+                            .Where(subProp => subProp.HasAttribute<ColumnAttribute>())
+                            .Where(subProp => subProp.HasAttribute<RequiredAttribute>())
+                            .Where(subProp => subProp.HasAttribute<IndexAttribute>())
+                            .Where(subProp => !subProp.HasAttribute<ForeignKeyAttribute>())
+                            .Select(subProp => new PropertyConstraint(subEntity, subProp.Name, foreignKey.Name));
+                    })
+                    .SelectMany(prop => prop)
+                    .ToList().ForEach(constraints.Add);
+            }
+
+            return constraints;
         }
 
         public EnumContentType GetContentType(string columnName)

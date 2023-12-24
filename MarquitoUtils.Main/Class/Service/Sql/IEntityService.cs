@@ -20,7 +20,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// <typeparam name="T">The entity type</typeparam>
         /// <param name="id">The id</param>
         /// <returns>An entity found by his id</returns>
-        public T FindEntityById<T>(int id) 
+        public T? FindEntityById<T>(int id) 
             where T : Entity, IEntity;
 
         /// <summary>
@@ -67,8 +67,6 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// <param name="entity">The entity to persist</param>
         public void PersistEntity<T>(T entity) 
             where T : Entity, IEntity;
-
-        public IQueryable GetEntityList(Type T);
 
         /// <summary>
         /// Get entities of specific entity type

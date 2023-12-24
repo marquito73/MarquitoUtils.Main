@@ -10,12 +10,22 @@ using System.Threading.Tasks;
 
 namespace MarquitoUtils.Main.Class.Office.Excel.Import
 {
+    /// <summary>
+    /// Import with Excel files
+    /// </summary>
     public abstract class ImportExcel : ImportExportExcel
     {
+        /// <summary>
+        /// Import with Excel files
+        /// </summary>
+        /// <param name="fileName">The Excel's file to import</param>
         protected ImportExcel(string fileName) : base(fileName)
         {
         }
 
+        /// <summary>
+        /// Init the import of the excel's file
+        /// </summary>
         public void Init()
         {
             ManageData();
@@ -26,17 +36,26 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Import
             ManageDataRows();
         }
 
+        /// <summary>
+        /// Manage data and create sheets, columns and rows
+        /// </summary>
         private void ManageData()
         {
             ManageSheets();
             ManageColumns();
         }
 
+        /// <summary>
+        /// Import data
+        /// </summary>
         private void ImportData()
         {
             this.ImportSheets();
         }
 
+        /// <summary>
+        /// Import sheets
+        /// </summary>
         private void ImportSheets()
         {
             this.WorkBook.Sheets.ToList().ForEach(sheet =>
@@ -47,6 +66,11 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Import
             });
         }
 
+        /// <summary>
+        /// Import data's rows
+        /// </summary>
+        /// <param name="sheet">The sheet</param>
+        /// <param name="xSheet">The real sheet</param>
         private void ImportDataRows(ExcelSheet sheet, ISheet xSheet)
         {
             int rowCount = sheet.HeaderRowNumber + 1;
@@ -72,12 +96,20 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Import
             }
         }
 
+        /// <summary>
+        /// Set cell value
+        /// </summary>
+        /// <param name="cell">The cell</param>
+        /// <param name="xCell">The real cell</param>
         private void SetCellValue(ExcelCell cell, ICell xCell)
         {
             switch (cell.ValueType)
             {
                 case EnumContentType.Date:
-                    cell.Value = xCell.DateCellValue;
+                    if (!xCell.DateCellValue.Equals(new DateTime(1, 1, 1, 0, 0, 0)))
+                    {
+                        cell.Value = xCell.DateCellValue;
+                    }
                     break;
                 case EnumContentType.Number:
                     cell.Value = xCell.NumericCellValue;
@@ -92,6 +124,9 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Import
             }
         }
 
+        /// <summary>
+        /// Load the workbook
+        /// </summary>
         private void Load()
         {
             using (FileStream fs = new FileStream(WorkBook.Filename, FileMode.Open, FileAccess.Read))

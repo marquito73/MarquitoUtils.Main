@@ -3,13 +3,22 @@ using MarquitoUtils.Main.Class.Entities.Sql.Attributes;
 using MarquitoUtils.Main.Class.Enums;
 using MarquitoUtils.Main.Class.Sql;
 using MarquitoUtils.Main.Class.Tools;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 
 namespace MarquitoUtils.Main.Class.Office.Excel.Tools
 {
+    /// <summary>
+    /// Excel utils functions
+    /// </summary>
     public static class ExcelUtils
     {
+        /// <summary>
+        /// Get entity types to import or export
+        /// </summary>
+        /// <typeparam name="DBContext">The database's context</typeparam>
+        /// <returns>Entity types to import or export</returns>
         public static ISet<Type> GetEntityTypesToImportExport<DBContext>()
             where DBContext : DefaultDbContext
         {
@@ -26,9 +35,18 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Tools
                 .ToHashSet();
         }
 
+        /// <summary>
+        /// Get entity's properties
+        /// </summary>
+        /// <param name="entityType">The entity type</param>
+        /// <returns>Entity's properties</returns>
         public static ISet<PropertyInfo> GetEntityProperties(Type entityType)
         {
             IEnumerable<PropertyInfo> properties = entityType.GetProperties()
+                // Exclude id
+                .Where(prop => !prop.Name.Equals(nameof(Entity.Id)))
+                // Exclude entity code
+                .Where(prop => !prop.Name.Equals(nameof(Entity.EntityIdentityCode)))
                 // Exclude list of entities
                 .Where(prop => !Utils.IsGenericCollectionType(prop.PropertyType)
                 || !Utils.IsAnEntityType(prop.PropertyType.GenericTypeArguments[0]))
@@ -61,9 +79,64 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Tools
             entityProperties.AddRange(properties
                 .Where(prop => !Utils.IsAnEntityType(prop.PropertyType)));
 
-            return entityProperties.ToHashSet();
+            return entityProperties.OrderBy(prop => IsDependencyColumn(prop) ? 0 : 1).ToHashSet();
         }
 
+        /// <summary>
+        /// The property is a dependency's column ?
+        /// </summary>
+        /// <param name="property">The property</param>
+        /// <returns>The property is a dependency's column ?</returns>
+        private static bool IsDependencyColumn(PropertyInfo property)
+        {
+            return property.DeclaringType.GetProperties()
+                .Where(prop => prop.HasAttribute<DependencyColumnAttribute>())
+                .Where(prop => prop.GetCustomAttribute<DependencyColumnAttribute>().ColumnName.Equals(property.Name))
+                .Any();
+        }
+
+        /// <summary>
+        /// Get entity properties as a Map
+        /// </summary>
+        /// <param name="entity">The entity</param>
+        /// <returns>Entity properties as a Map</returns>
+        public static IDictionary<Type, ISet<PropertyInfo>> GetEntityPropertiesMap(Entity entity)
+        {
+            Type entityType = entity.GetType();
+
+            return entityType.GetProperties()
+                // Exclude id
+                .Where(prop => !prop.Name.Equals(nameof(Entity.Id)))
+                // Exclude entity code
+                .Where(prop => !prop.Name.Equals(nameof(Entity.EntityIdentityCode)))
+                // Exclude list of entities
+                .Where(prop => !Utils.IsGenericCollectionType(prop.PropertyType)
+                || !Utils.IsAnEntityType(prop.PropertyType.GenericTypeArguments[0]))
+                .Where(prop => !prop.HasAttribute<ForeignKeyAttribute>())
+                .Where(prop => Utils.IsAnEntityType(prop.PropertyType))
+                .Where(prop =>
+                {
+                    bool dependentColumnIsValid = true;
+
+                    if (prop.HasAttribute<DependencyColumnAttribute>())
+                    {
+                        DependencyColumnAttribute dependencyColumn = prop.GetCustomAttribute<DependencyColumnAttribute>();
+
+                        dependentColumnIsValid = dependencyColumn.DependentValue
+                            .Equals(entity.GetFieldValue(dependencyColumn.ColumnName));
+                    }
+
+                    return dependentColumnIsValid;
+                })
+                .GroupBy(prop => prop.DeclaringType).
+                ToDictionary(x => x.Key, x => (ISet<PropertyInfo>)x.ToHashSet());
+        }
+
+        /// <summary>
+        /// Get value type for a property
+        /// </summary>
+        /// <param name="property">The property</param>
+        /// <returns>Value type for a property</returns>
         public static EnumContentType GetValueType(PropertyInfo property)
         {
             EnumContentType contentType;
@@ -71,6 +144,10 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Tools
             if (property.PropertyType.IsDateTimeType())
             {
                 contentType = EnumContentType.Date;
+            }
+            else if (property.PropertyType.IsEnum)
+            {
+                contentType = EnumContentType.Text;
             }
             else if (property.PropertyType.IsNumericType())
             {

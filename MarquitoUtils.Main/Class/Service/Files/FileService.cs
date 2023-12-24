@@ -1,9 +1,7 @@
-﻿using MarquitoUtils.Main.Class.Service.General;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MarquitoUtils.Main.Class.Entities.File;
+using MarquitoUtils.Main.Class.Service.General;
+using System.Reflection;
+using System.Xml.Linq;
 
 namespace MarquitoUtils.Main.Class.Service.Files
 {
@@ -21,6 +19,28 @@ namespace MarquitoUtils.Main.Class.Service.Files
         {
             return this.GetFilesInDirectory(directory, extension)
                 .Where(filePath => filePath.Contains(fileName)).First();
+        }
+
+        public DatabaseConfiguration GetDatabaseConfiguration(string databaseConfigurationFileName)
+        {
+            DatabaseConfiguration databaseConfiguration;
+
+            string fileName = Assembly.GetEntryAssembly().GetManifestResourceNames()
+                .Where(file => file.Contains(databaseConfigurationFileName.Replace("\\", ".")))
+                .FirstOrDefault();
+
+            using (Stream configStream = Assembly.GetEntryAssembly().GetManifestResourceStream(fileName))
+            {
+                XDocument configFile = XDocument.Load(configStream);
+
+                XElement databaseNode = configFile.Descendants("Configuration").First().Descendants("Connection").First();
+
+                databaseConfiguration = new DatabaseConfiguration(databaseNode.Attribute("User").Value,
+                    databaseNode.Attribute("Password").Value, databaseNode.Attribute("Source").Value,
+                    databaseNode.Attribute("DatabaseName").Value);
+            }
+
+            return databaseConfiguration;
         }
     }
 }

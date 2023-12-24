@@ -3,6 +3,7 @@ using MarquitoUtils.Main.Class.Sql;
 using MarquitoUtils.Main.Class.Tools;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using NPOI.SS.Formula.Functions;
 using System.Reflection;
 
 namespace MarquitoUtils.Main.Class.Service.Sql
@@ -17,21 +18,10 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// </summary>
         public DefaultDbContext DbContext { get; set; }
 
-        public T FindEntityById<T>(int id) 
+        public T? FindEntityById<T>(int id) 
             where T : Entity, IEntity
         {
-            T entity = null;
-
-            List<T> entities = this.GetEntityList<T>();
-
-            if (Utils.IsNotEmpty(entities))
-            //if (Utility.IsNotEmpty(this.DbContext.ChangeTracker.Entries()))
-            {
-                entity = entities.SingleOrDefault<T>(entity => entity.Id == id);
-                //entity = this.DbContext.Set<T>().SingleOrDefault<T>(entity => entity.Id == id);
-            }
-
-            return entity;
+            return this.GetEntityList<T>().SingleOrDefault(entity => entity.Id == id);
         }
 
         public List<T> FindEntitiesByIds<T>(List<int> ids)
@@ -89,11 +79,25 @@ namespace MarquitoUtils.Main.Class.Service.Sql
 
             foreach (PropertyConstraint constraint in constraints)
             {
-                object fieldValue = entity.GetFieldValue(constraint.PropertyName);
+                object fieldValue;
+
+                if (typeof(T).Equals(constraint.OwnerType))
+                {
+                    // The constraint apply to the entity
+                    fieldValue = entity.GetFieldValue(constraint.PropertyName);
+                }
+                else
+                {
+                    // The constraint apply to a sub entity
+                    Entity subEntity = (Entity)entity.GetFieldValue(constraint.ParentPropertyName);
+
+                    fieldValue = subEntity.GetFieldValue(constraint.PropertyName);
+                }
+
                 if (fieldValue is string)
                 {
                     string strFieldValueAsString = Utils.GetAsString(fieldValue);
-                    string strConstraintValue = Utils.GetAsString(constraint.Value);
+                    string strConstraintValue = Utils.GetAsString(constraint.Value).Replace("\n", "\r\n");
                     if (!constraint.CaseSensitive)
                     {
                         strFieldValueAsString = strFieldValueAsString.ToLower();
@@ -137,21 +141,6 @@ namespace MarquitoUtils.Main.Class.Service.Sql
             }
         }
 
-        public IQueryable GetEntityList(Type T)
-        {
-            // Get the generic type definition
-            /*MethodInfo method = this.DbContext.GetType().GetMethod(nameof(this.DbContext.Set), 
-                BindingFlags.Public | BindingFlags.Instance);*/
-
-            MethodInfo method = this.DbContext.GetType().GetMethods()
-                .Where(method => method.Name.Equals(nameof(this.DbContext.Set))).First();
-
-            // Build a method with the specific type argument you're interested in
-            method = method.MakeGenericMethod(T);
-
-            return (method.Invoke(this.DbContext, null) as IQueryable);
-        }
-
         public List<T> GetEntityList<T>() where T : Entity, IEntity
         {
             return this.GetEntityList<T>(new List<Func<T, bool>>(), new HashSet<string>());
@@ -172,9 +161,10 @@ namespace MarquitoUtils.Main.Class.Service.Sql
 
             if (Utils.IsNotEmpty(this.DbContext.Set<T>().ToList()))
             {
-                entityList.AddRange(this.ApplyIncludes(this.DbContext.Set<T>(), includes)
+                this.ApplyIncludes(this.DbContext.Set<T>(), includes)
                     .Where(this.ApplyFilters(filters))
-                    .ToList());
+                    .Where(entity => !entityList.Select(e => e.EntityIdentityCode).Contains(entity.EntityIdentityCode))
+                    .ToList().ForEach(entityList.Add);
             }
 
             return entityList.Distinct().ToList();

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MarquitoUtils.Main.Class.Entities.File;
 
 namespace MarquitoUtils.Main.Class.Service.Files
 {
@@ -27,5 +23,12 @@ namespace MarquitoUtils.Main.Class.Service.Files
         /// <param name="extension">Extension of files searched</param>
         /// <returns>File path of file inside directory</returns>
         public string GetFilePathInDirectory(string directory, string fileName, string extension = "*");
+
+        /// <summary>
+        /// Get the database configuration file of the project launch the application
+        /// </summary>
+        /// <param name="databaseConfigurationFileName">The database configuration file name</param>
+        /// <returns>The database configuration file of the project launch the application</returns>
+        public DatabaseConfiguration GetDatabaseConfiguration(string databaseConfigurationFileName);
     }
 }

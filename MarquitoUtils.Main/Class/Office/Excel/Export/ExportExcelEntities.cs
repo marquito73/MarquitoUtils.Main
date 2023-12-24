@@ -1,23 +1,32 @@
 ﻿using MarquitoUtils.Main.Class.Entities.Sql;
-using MarquitoUtils.Main.Class.Entities.Sql.Attributes;
-using MarquitoUtils.Main.Class.Enums;
 using MarquitoUtils.Main.Class.Office.Excel.Tools;
-using MarquitoUtils.Main.Class.Service.Sql;
+using MarquitoUtils.Main.Class.Service.Import;
 using MarquitoUtils.Main.Class.Sql;
 using MarquitoUtils.Main.Class.Tools;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 
 namespace MarquitoUtils.Main.Class.Office.Excel.Export
 {
+    /// <summary>
+    /// Export database's entities with Excel's file
+    /// </summary>
+    /// <typeparam name="DBContext">The database's context</typeparam>
     public sealed class ExportExcelEntities<DBContext> : ExportExcel
         where DBContext : DefaultDbContext
     {
-        private IEntityService EntityService { get; set; } = new EntityService();
+        /// <summary>
+        /// The import's service
+        /// </summary>
+        private IImportService ImportService { get; set; } = new ImportService();
 
+        /// <summary>
+        /// Export database's entities with Excel's file
+        /// </summary>
+        /// <param name="fileName">Filename for the Excel export file</param>
+        /// <param name="dbContext">The database's context</param>
         public ExportExcelEntities(string fileName, DBContext dbContext) : base(fileName)
         {
-            this.EntityService.DbContext = dbContext;
+            this.ImportService.DbContext = dbContext;
         }
 
         protected override void ManageSheets()
@@ -62,7 +71,7 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Export
                 ExcelSheet sheet = this.GetSheet(entityType.Name);
 
                 int rowCount = 0;
-                foreach (Entity entity in this.EntityService.GetEntityList(entityType))
+                foreach (Entity entity in this.ImportService.GetEntityList(entityType))
                 {
                     ExcelRow row = sheet.GetRow(rowCount);
 
@@ -81,7 +90,12 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Export
                         {
                             PropertyInfo subEntityProperty = entityType.GetFirstPropertyOfType(property.DeclaringType);
 
-                            cell.Value = ((Entity)entity.GetFieldValue(subEntityProperty.Name)).GetFieldValue(property.Name);
+                            Entity subEntity = ((Entity)entity.GetFieldValue(subEntityProperty.Name));
+
+                            if (Utils.IsNotNull(subEntity))
+                            {
+                                cell.Value = subEntity.GetFieldValue(property.Name);
+                            }
                         }
 
                         columnCount++;

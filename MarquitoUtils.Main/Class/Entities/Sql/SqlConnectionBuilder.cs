@@ -1,4 +1,5 @@
-﻿using System.Data.SqlClient;
+﻿using MarquitoUtils.Main.Class.Entities.File;
+using System.Data.SqlClient;
 using System.Text;
 
 namespace MarquitoUtils.Main.Class.Entities.Sql
@@ -24,12 +25,32 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
         /// Database's name
         /// </summary>
         public string DataBase { get; private set; } = "";
+
+        /// <summary>
+        /// Class for build DB connection string
+        /// </summary>
+        /// <param name="user">Database's user</param>
+        /// <param name="password">Database's user password</param>
+        /// <param name="source">Database's source</param>
+        /// <param name="dataBase">Database's name</param>
         public SqlConnectionBuilder(string user, string password, string source, string dataBase = "")
         {
             this.User = user;
             this.Password = password;
             this.Source = source;
             this.DataBase = dataBase;
+        }
+
+        /// <summary>
+        /// Class for build DB connection string
+        /// </summary>
+        /// <param name="databaseConfiguration">Database configuration file</param>
+        public SqlConnectionBuilder(DatabaseConfiguration databaseConfiguration)
+        {
+            this.User = databaseConfiguration.User;
+            this.Password = databaseConfiguration.Password;
+            this.Source = databaseConfiguration.Source;
+            this.DataBase = databaseConfiguration.DatabaseName;
         }
 
         /// <summary>

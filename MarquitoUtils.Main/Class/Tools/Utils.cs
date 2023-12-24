@@ -400,7 +400,8 @@ namespace MarquitoUtils.Main.Class.Tools
 
             if (IsNotNull(data))
             {
-                bytesReturn = (byte[])data;
+                //bytesReturn = (byte[])data;
+                bytesReturn = ObjectToByteArray(data);
             }
 
             return bytesReturn;

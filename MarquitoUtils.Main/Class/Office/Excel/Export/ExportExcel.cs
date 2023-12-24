@@ -5,17 +5,22 @@ using NPOI.OpenXmlFormats.Spreadsheet;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
-using NPOI.XWPF.UserModel;
 using ICell = NPOI.SS.UserModel.ICell;
 
 namespace MarquitoUtils.Main.Class.Office.Excel.Export
 {
+    /// <summary>
+    /// Export with Excel files
+    /// </summary>
     public abstract class ExportExcel : ImportExportExcel
     {
         protected ExportExcel(string fileName) : base(fileName)
         {
         }
 
+        /// <summary>
+        /// Init the export of the excel's file
+        /// </summary>
         public void Init()
         {
             this.ManageData();
@@ -23,6 +28,9 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Export
             this.CreateData();
         }
 
+        /// <summary>
+        /// Manage data and create sheets, columns and rows
+        /// </summary>
         private void ManageData()
         {
             this.ManageSheets();
@@ -30,11 +38,9 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Export
             this.ManageDataRows();
         }
 
-        private void CreateData()
-        {
-            this.CreateSheets();
-        }
-
+        /// <summary>
+        /// Save data as workbook
+        /// </summary>
         public void Save()
         {
             using (FileStream fs = new FileStream(this.WorkBook.Filename, FileMode.Create))
@@ -43,6 +49,17 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Export
             }
         }
 
+        /// <summary>
+        /// Convert workbook into real workbook
+        /// </summary>
+        private void CreateData()
+        {
+            this.CreateSheets();
+        }
+
+        /// <summary>
+        /// Convert sheets into real sheets
+        /// </summary>
         private void CreateSheets()
         {
             uint sheetIndex = 1;
@@ -67,6 +84,11 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Export
             });
         }
 
+        /// <summary>
+        /// Convert columns into real columns
+        /// </summary>
+        /// <param name="sheet">The sheet</param>
+        /// <param name="xSheet">The real sheet</param>
         private void CreateColumns(ExcelSheet sheet, ISheet xSheet)
         {
             IRow headerRow = xSheet.CreateRow(sheet.HeaderRowNumber);
@@ -78,6 +100,11 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Export
             });
         }
 
+        /// <summary>
+        /// Apply style to a column
+        /// </summary>
+        /// <param name="sheet">The sheet</param>
+        /// <param name="xSheet">The real sheet</param>
         private void ApplyStyleToColumn(ExcelSheet sheet, ISheet xSheet)
         {
             foreach (ExcelColumn column in sheet.Columns)
@@ -89,6 +116,11 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Export
             }
         }
 
+        /// <summary>
+        /// Add cell's values to data rows
+        /// </summary>
+        /// <param name="sheet">The sheet</param>
+        /// <param name="xSheet">The real sheet</param>
         private void CreateDataRows(ExcelSheet sheet, ISheet xSheet)
         {
             sheet.Rows.ToList().ForEach(row =>
@@ -112,6 +144,11 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Export
             });
         }
 
+        /// <summary>
+        /// Get cell type for a cell
+        /// </summary>
+        /// <param name="cell">The cell</param>
+        /// <returns>Cell type for a cell</returns>
         private CellType GetCellType(ExcelCell cell)
         {
             CellType cellType;
@@ -136,12 +173,16 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Export
             return cellType;
         }
 
+        /// <summary>
+        /// Set cell value
+        /// </summary>
+        /// <param name="cell">The cell</param>
+        /// <param name="xCell">The real cell</param>
         private void SetCellValue(ExcelCell cell, ICell xCell)
         {
             switch (cell.ValueType)
             {
                 case EnumContentType.Date:
-                    //xCell.SetCellValue(Utils.GetAsDateTime(cell.Value));
                     if (Utils.IsNotNull(cell.Value))
                     {
                         xCell.SetCellValue((DateTime)cell.Value);
@@ -160,6 +201,11 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Export
             }
         }
 
+        /// <summary>
+        /// Merge cell style, between column and cell
+        /// </summary>
+        /// <param name="cell">The cell</param>
+        /// <returns>Merged cell style, between column and cell</returns>
         private CellStyle MergeCellStyle(ExcelCell cell)
         {
             CellStyle mergedStyle = new CellStyle();
@@ -174,9 +220,20 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Export
                 mergedStyle = cell.CellStyle;
             }
 
+            if (cell.ValueType.Equals(EnumContentType.Date))
+            {
+                mergedStyle.UseDateFormat = true;
+            }
+
             return mergedStyle;
         }
 
+        /// <summary>
+        /// Apply style to table
+        /// </summary>
+        /// <param name="sheet">The sheet</param>
+        /// <param name="xSheet">The real sheet</param>
+        /// <param name="sheetIndex">The sheet's index</param>
         private void ApplyTableStyle(ExcelSheet sheet, ISheet xSheet, uint sheetIndex)
         {
             XSSFTable table = (xSheet as XSSFSheet).CreateTable();

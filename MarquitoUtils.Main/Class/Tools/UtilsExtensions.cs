@@ -1,4 +1,5 @@
 ﻿using MarquitoUtils.Main.Class.Entities.Param;
+using MarquitoUtils.Main.Class.Entities.Sql;
 using System.Reflection;
 
 namespace MarquitoUtils.Main.Class.Tools
@@ -89,6 +90,11 @@ namespace MarquitoUtils.Main.Class.Tools
         public static bool IsNullableType(this Type type)
         {
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
+        public static bool IsAnEntityType(this Type type)
+        {
+            return type.IsSubclassOf(typeof(Entity));
         }
     }
 }
