@@ -51,6 +51,7 @@ namespace MarquitoUtils.Main.Class.Service.General
             string translationFound;
 
             translationFound = this.Translations
+                .Where(translation => typeof(T).Assembly.GetName().Name.Contains(translation.OriginApp))
                 .Where(translation => translation.OriginApp.Equals(typeof(T).Assembly.GetName().Name))
                 .Where(translation => translation.Language.Equals(language))
                 .Where(translation => translation.Class.IsEquivalentTo(typeof(T)))
