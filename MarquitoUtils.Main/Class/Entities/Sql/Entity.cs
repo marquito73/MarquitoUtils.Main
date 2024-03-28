@@ -38,6 +38,32 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
             return this.GetPropertyInfo(fieldName).GetValue(this, null);
         }
 
+        public bool FieldEquals<TFieldType>(string fieldName, TFieldType value, bool TrimIfString = false)
+        {
+            bool fieldEquals;
+
+            //TrimIfString
+            TFieldType fieldValue = (TFieldType)this.GetFieldValue(fieldName);
+
+            if (Utils.IsNotNull(fieldValue))
+            {
+                if (typeof(TFieldType).Equals(typeof(string)))
+                {
+                    fieldEquals = (fieldValue as string).Trim().Equals((value as string).Trim());
+                }
+                else
+                {
+                    fieldEquals = fieldValue.Equals(value);
+                }
+            }
+            else
+            {
+                fieldEquals = false;
+            }
+
+            return fieldEquals;
+        }
+
         public void SetFieldValue(string fieldName, object value)
         {
             this.GetPropertyInfo(fieldName).SetValue(this, value, null);

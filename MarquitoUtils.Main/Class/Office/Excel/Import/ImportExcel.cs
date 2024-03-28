@@ -79,20 +79,27 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Import
 
             while (Utils.IsNotNull(xRow))
             {
-                ExcelRow row = sheet.GetRow(rowCount);
-
-                sheet.Columns.ToList().ForEach(column =>
+                if (xRow.Cells.All(cell => Utils.IsEmpty(cell.StringCellValue)))
                 {
-                    ICell xCell = xRow.GetCell(column.ColumnNumber);
+                    xRow = null;
+                }
+                else
+                {
+                    ExcelRow row = sheet.GetRow(rowCount);
 
-                    ExcelCell cell = row.GetCell(column);
+                    sheet.Columns.ToList().ForEach(column =>
+                    {
+                        ICell xCell = xRow.GetCell(column.ColumnNumber);
 
-                    this.SetCellValue(cell, xCell);
-                });
+                        ExcelCell cell = row.GetCell(column);
 
-                rowCount++;
+                        this.SetCellValue(cell, xCell);
+                    });
 
-                xRow = xSheet.GetRow(rowCount);
+                    rowCount++;
+
+                    xRow = xSheet.GetRow(rowCount);
+                }
             }
         }
 
@@ -119,7 +126,14 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Import
                     break;
                 case EnumContentType.Text:
                 default:
-                    cell.Value = xCell.StringCellValue;
+                    if (xCell.CellType.Equals(CellType.Numeric))
+                    {
+                        cell.Value = Utils.GetAsString(xCell.NumericCellValue);
+                    }
+                    else
+                    {
+                        cell.Value = xCell.StringCellValue;
+                    }
                     break;
             }
         }

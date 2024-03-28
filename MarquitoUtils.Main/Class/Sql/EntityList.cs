@@ -138,23 +138,27 @@ namespace MarquitoUtils.Main.Class.Sql
                     case FilterType.IS_EQUAL:
                         if (propertyValue is string)
                         {
-                            equalFilter = entity => ((string)entity.GetFieldValue(propertyName)).Trim()
-                            .Equals(((string)propertyValue).Trim());
+                            /*equalFilter = entity => ((string)entity.GetFieldValue(propertyName)).Trim()
+                            .Equals(((string)propertyValue).Trim());*/
+                            equalFilter = entity => entity.FieldEquals(propertyName, (string) propertyValue, true);
                         }
                         else
                         {
-                            equalFilter = entity => entity.GetFieldValue(propertyName).Equals(propertyValue);
+                            //equalFilter = entity => entity.GetFieldValue(propertyName).Equals(propertyValue);
+                            equalFilter = entity => entity.FieldEquals(propertyName, propertyValue);
                         }
                         break;
                     case FilterType.IS_NOT_EQUAL:
                         if (propertyValue is string)
                         {
-                            equalFilter = entity => !((string)entity.GetFieldValue(propertyName)).Trim()
-                            .Equals(((string)propertyValue).Trim());
+                           /* equalFilter = entity => !((string)entity.GetFieldValue(propertyName)).Trim()
+                            .Equals(((string)propertyValue).Trim());*/
+                            equalFilter = entity => !entity.FieldEquals(propertyName, (string)propertyValue, true);
                         }
                         else
                         {
-                            equalFilter = entity => !entity.GetFieldValue(propertyName).Equals(propertyValue);
+                           // equalFilter = entity => !entity.GetFieldValue(propertyName).Equals(propertyValue);
+                            equalFilter = entity => !entity.FieldEquals(propertyName, propertyValue);
                         }
                         break;
                     case FilterType.IS_IN:

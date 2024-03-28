@@ -50,14 +50,30 @@ namespace MarquitoUtils.Main.Class.Service.General
         {
             string translationFound;
 
-            translationFound = this.Translations
-                .Where(translation => typeof(T).Assembly.GetName().Name.Contains(translation.OriginApp))
-                .Where(translation => translation.OriginApp.Equals(typeof(T).Assembly.GetName().Name))
+            IEnumerable<Translation> translations = this.Translations
                 .Where(translation => translation.Language.Equals(language))
                 .Where(translation => translation.Class.IsEquivalentTo(typeof(T)))
-                .Where(translation => translation.TranslationKey.Equals(translationKey))
-                .Select(translation => translation.TranslationValue)
-                .FirstOrDefault();
+                .Where(translation => translation.TranslationKey.Equals(translationKey));
+
+            if (Utils.IsNotEmpty(translations))
+            {
+                IEnumerable<Translation> translationsFound = translations
+                    .Where(translation => translation.OriginApp.Equals(typeof(T).Assembly.GetName().Name));
+
+                if (Utils.IsEmpty(translationsFound))
+                {
+                    translationsFound = translations
+                    .Where(translation => typeof(T).Assembly.GetName().Name.Contains(translation.OriginApp));
+                }
+
+                translationFound = translationsFound
+                    .Select(translation => translation.TranslationValue)
+                    .FirstOrDefault();
+            }
+            else
+            {
+                translationFound = "";
+            }
 
             if (Utils.IsEmpty(translationFound))
             {
@@ -160,7 +176,7 @@ namespace MarquitoUtils.Main.Class.Service.General
                         // The full class name
                         string fullClassName = clsNode.Attribute("cls").Value;
                         // Construction with the type and the assembly name
-                        StringBuilder sbFullCs = new StringBuilder();
+                        /*StringBuilder sbFullCs = new StringBuilder();
                         sbFullCs.Append(clsNode.Attribute("cls").Value).Append(", ");
                         if (Utils.IsNull(fileAssembly))
                         {
@@ -173,7 +189,19 @@ namespace MarquitoUtils.Main.Class.Service.General
                             sbFullCs.Append(fileAssembly.GetName().Name);
                         }
                         // The class
-                        Type cls = Type.GetType(sbFullCs.ToString());
+                        Type cls = Type.GetType(sbFullCs.ToString());*/
+
+
+                        Type cls = this.GetTranslationType(fileAssembly, clsNode, originApp);
+
+                        if (Utils.IsNull(cls))
+                        {
+                            /*foreach (Assembly assembly in Assembly.GetEntryAssembly().GetReferencedAssemblies().Select(ass => ass.get)
+                            {
+                                cls = this.GetTranslationType(assembly, clsNode, originApp);
+                            }*/
+                        }
+
                         // Loop of each translation
                         foreach (XElement translationNode in clsNode.Descendants("Translation"))
                         {
@@ -191,6 +219,47 @@ namespace MarquitoUtils.Main.Class.Service.General
             }
 
             return translations;
+        }
+
+        private Type GetTranslationType(Assembly assembly, XElement clsNode, string originApp)
+        {
+            Type resultType;
+            //AppDomain.CurrentDomain.GetAssemblies().Where(assembly => assembly.GetName())
+
+            // Construction with the type and the assembly name
+            StringBuilder sbFullCs = new StringBuilder();
+            sbFullCs.Append(clsNode.Attribute("cls").Value).Append(", ");
+            if (Utils.IsNull(assembly))
+            {
+                // With the application attribute specified with the node "Translations"
+                sbFullCs.Append(originApp);
+            }
+            else
+            {
+                // With the specified assembly
+                sbFullCs.Append(assembly.GetName().Name);
+            }
+
+            if (assembly.AssemblyHasType(sbFullCs.ToString()))
+            {
+                resultType = assembly.GetType(sbFullCs.ToString());
+            }
+            else
+            {
+                sbFullCs = new StringBuilder();
+                sbFullCs.Append(clsNode.Attribute("cls").Value);
+
+                IEnumerable<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies()
+                    .Where(assemblyBis => !assemblyBis.GetName().Name.ToLower().StartsWith("system."))
+                    .Where(assemblyBis => !assemblyBis.GetName().Name.ToLower().StartsWith("microsoft."));
+                
+
+                resultType = assemblies.Where(assemblyBis => assemblyBis.AssemblyHasType(sbFullCs.ToString()))
+                    .Select(assemblyBis => assemblyBis.GetType(sbFullCs.ToString()))
+                    .FirstOrDefault();
+            }
+
+            return resultType;
         }
     }
 }

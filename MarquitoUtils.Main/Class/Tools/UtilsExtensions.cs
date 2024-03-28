@@ -1,5 +1,6 @@
 ﻿using MarquitoUtils.Main.Class.Entities.Param;
 using MarquitoUtils.Main.Class.Entities.Sql;
+using NPOI.SS.Formula.Functions;
 using System.Reflection;
 
 namespace MarquitoUtils.Main.Class.Tools
@@ -12,6 +13,18 @@ namespace MarquitoUtils.Main.Class.Tools
             parameters.Add(new Parameter(parameterName, parameterValue));
 
             return parameters;
+        }
+
+        /// <summary>
+        /// Determinate if none elements match the condition
+        /// </summary>
+        /// <typeparam name="T">Element's type</typeparam>
+        /// <param name="collection">Elements to check</param>
+        /// <param name="predicate">The condition</param>
+        /// <returns>None elements match the condition ?</returns>
+        public static bool None<T>(this IEnumerable<T> collection, Func<T, bool> predicate)
+        {
+            return !collection.Any(predicate);
         }
 
         /// <summary>
@@ -95,6 +108,16 @@ namespace MarquitoUtils.Main.Class.Tools
         public static bool IsAnEntityType(this Type type)
         {
             return type.IsSubclassOf(typeof(Entity));
+        }
+
+        public static bool AssemblyHasType<T>(this Assembly assembly)
+        {
+            return assembly.GetTypes().Any(type => type.Equals(typeof(T)));
+        }
+
+        public static bool AssemblyHasType(this Assembly assembly, string typeFullName)
+        {
+            return assembly.GetTypes().Any(type => type.FullName.Equals(typeFullName));
         }
     }
 }

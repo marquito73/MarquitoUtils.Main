@@ -14,6 +14,7 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Export
     /// </summary>
     public abstract class ExportExcel : ImportExportExcel
     {
+        public uint OtherGridRowsIfSheetLocked { get; set; } = 50;
         protected ExportExcel(string fileName) : base(fileName)
         {
         }
@@ -142,6 +143,37 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Export
                     dataCell.CellStyle = this.MergeCellStyle(cell).GetCellStyle(this.XWorkBook);
                 });
             });
+
+            if (sheet.Protect)
+            {
+                // Unlock 50 rows for add possibility to import new rows
+                for (int cpt = 1; cpt <= this.OtherGridRowsIfSheetLocked; cpt++)
+                {
+                    IRow dataRow = xSheet.CreateRow(sheet.Rows.Count + sheet.HeaderRowNumber + cpt);
+
+                    sheet.Columns.ToList().ForEach(column =>
+                    {
+                        ICell dataCell = dataRow.CreateCell(column.ColumnNumber);
+
+                        if (!column.ValueType.Equals(EnumContentType.Date))
+                        {
+                            dataCell.SetCellType(this.GetCellType(column));
+                        }
+
+                        dataCell.CellStyle = column.CellStyle.GetCellStyle(this.XWorkBook);
+                    });
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get cell type for a column
+        /// </summary>
+        /// <param name="cell">The column</param>
+        /// <returns>Cell type for a column</returns>
+        private CellType GetCellType(ExcelColumn column)
+        {
+            return this.GetCellType(column.ValueType);
         }
 
         /// <summary>
@@ -151,12 +183,22 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Export
         /// <returns>Cell type for a cell</returns>
         private CellType GetCellType(ExcelCell cell)
         {
+            return this.GetCellType(cell.ValueType);
+        }
+
+        /// <summary>
+        /// Get cell type
+        /// </summary>
+        /// <param name="dataCellType">The cell type</param>
+        /// <returns>Cell type</returns>
+        private CellType GetCellType(EnumContentType dataCellType)
+        {
             CellType cellType;
 
-            switch (cell.ValueType)
+            switch (dataCellType)
             {
                 case EnumContentType.Date:
-                    cellType = CellType.Blank; 
+                    cellType = CellType.Blank;
                     break;
                 case EnumContentType.Number:
                     cellType = CellType.Numeric;
@@ -241,8 +283,10 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Export
 
             XSSFBuiltinTableStyle test = new XSSFBuiltinTableStyle();
 
+            int rowCount = sheet.Rows.Count == 0 ? 1 : sheet.Rows.Count;
+
             AreaReference dataRange = new AreaReference(new CellReference(sheet.HeaderRowNumber, 0), 
-                new CellReference(sheet.HeaderRowNumber + sheet.Rows.Count, sheet.Columns.Count - 1));
+                new CellReference(sheet.HeaderRowNumber + rowCount + (int)this.OtherGridRowsIfSheetLocked, sheet.Columns.Count - 1));
 
             ctTable.@ref = dataRange.FormatAsString();
             ctTable.id = sheetIndex;
