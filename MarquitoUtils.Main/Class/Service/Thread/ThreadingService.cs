@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace MarquitoUtils.Main.Class.Service.Threading
 {
+    /// <summary>
+    /// Threading service
+    /// </summary>
     public class ThreadingService : DefaultService, IThreadingService
     {
         public Thread PartitionDataProcess<T>(int numberOfThreads, List<T> dataToProcess, 
