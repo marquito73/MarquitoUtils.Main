@@ -3,16 +3,9 @@ using MarquitoUtils.Main.Class.Service.General;
 using MarquitoUtils.Main.Class.Tools;
 using MediaToolkit;
 using MediaToolkit.Model;
-using Microsoft.WindowsAPICodePack.Shell;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Text;
-using System.Threading;
-using System.Web;
 using File = System.IO.File;
 
 namespace MarquitoUtils.Main.Class.Service.Files
@@ -98,12 +91,6 @@ namespace MarquitoUtils.Main.Class.Service.Files
             }
 
             file.Save();
-        }
-
-        public void Test()
-        {
-            /*var file = ShellFile.FromFilePath(filePath);
-            ShellFile.*/
         }
 
         public void SetMusicProperties(TagFile tagFile, MusicFileProperties fileProperties)

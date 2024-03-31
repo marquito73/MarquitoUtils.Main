@@ -42,5 +42,13 @@ namespace MarquitoUtils.Main.Class.Service.Files
 
             return databaseConfiguration;
         }
+
+        public void SetCreationAndUpdateDateFileProperty(string fileName, DateTime creationDate, DateTime updateDate)
+        {
+            FileInfo fileInfo = new FileInfo(fileName);
+
+            fileInfo.CreationTime = creationDate;
+            fileInfo.LastWriteTime = updateDate;
+        }
     }
 }
