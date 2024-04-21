@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 
 namespace MarquitoUtils.Main.Class.Enums
 {
@@ -21,6 +16,18 @@ namespace MarquitoUtils.Main.Class.Enums
             where T : struct, IConvertible
         {
             return typeof(T).GetField(Enum.GetName(typeof(T), contentType));
+        }
+
+        public static TEnum GetEnum<TEnum>(string enumName)
+            where TEnum : struct, IConvertible
+        {
+            return (TEnum)Enum.Parse(typeof(TEnum), enumName);
+        }
+
+        public static string GetEnumName<TEnum>(this TEnum enumeration)
+            where TEnum : struct, IConvertible
+        {
+            return enumeration.ToString();
         }
     }
 }
