@@ -1,4 +1,5 @@
-﻿using MarquitoUtils.Main.Class.Service.Files;
+﻿using MarquitoUtils.Main.Class.Entities.File;
+using MarquitoUtils.Main.Class.Service.Files;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +15,9 @@ namespace MarquitoUtils.Main.Class.Service.Sql
     public interface ISqlScriptService
     {
         /// <summary>
-        /// The connection string for database
+        /// The configuration for connect to the database
         /// </summary>
-        public string ConnectionString { get; set; }
+        public DatabaseConfiguration DatabaseConfiguration { get; set; }
         /// <summary>
         /// File service
         /// </summary>

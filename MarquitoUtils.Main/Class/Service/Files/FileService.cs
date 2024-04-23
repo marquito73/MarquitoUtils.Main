@@ -21,6 +21,11 @@ namespace MarquitoUtils.Main.Class.Service.Files
                 .Where(filePath => filePath.Contains(fileName)).First();
         }
 
+        public DatabaseConfiguration GetDefaultDatabaseConfiguration()
+        {
+            return this.GetDatabaseConfiguration(@"Files\Configuration\Database.config");
+        }
+
         public DatabaseConfiguration GetDatabaseConfiguration(string databaseConfigurationFileName)
         {
             DatabaseConfiguration databaseConfiguration;
@@ -35,9 +40,12 @@ namespace MarquitoUtils.Main.Class.Service.Files
 
                 XElement databaseNode = configFile.Descendants("Configuration").First().Descendants("Connection").First();
 
-                databaseConfiguration = new DatabaseConfiguration(databaseNode.Attribute("User").Value,
-                    databaseNode.Attribute("Password").Value, databaseNode.Attribute("Source").Value,
-                    databaseNode.Attribute("DatabaseName").Value);
+                databaseConfiguration = new DatabaseConfiguration(
+                    databaseNode.Attribute("User").Value,
+                    databaseNode.Attribute("Password").Value, 
+                    databaseNode.Attribute("ServerName").Value,
+                    databaseNode.Attribute("InstanceName").Value,
+                    databaseNode.Attribute("Database").Value);
             }
 
             return databaseConfiguration;

@@ -27,6 +27,12 @@ namespace MarquitoUtils.Main.Class.Service.Files
         /// <summary>
         /// Get the database configuration file of the project launch the application
         /// </summary>
+        /// <returns>The database configuration file of the project launch the application</returns>
+        public DatabaseConfiguration GetDefaultDatabaseConfiguration();
+
+        /// <summary>
+        /// Get the database configuration file of the project launch the application
+        /// </summary>
         /// <param name="databaseConfigurationFileName">The database configuration file name</param>
         /// <returns>The database configuration file of the project launch the application</returns>
         public DatabaseConfiguration GetDatabaseConfiguration(string databaseConfigurationFileName);

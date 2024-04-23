@@ -1,4 +1,5 @@
-﻿using MarquitoUtils.Main.Class.Entities.Sql;
+﻿using MarquitoUtils.Main.Class.Entities.File;
+using MarquitoUtils.Main.Class.Entities.Sql;
 using MarquitoUtils.Main.Class.Tools;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,11 +23,11 @@ namespace MarquitoUtils.Main.Class.Sql
         /// Main constructor of default database context
         /// </summary>
         /// <param name="contextBuilder">Database context builder</param>
-        /// <param name="sqlBuilder">Sql connection builder</param>
-        protected DefaultDbContext(DbContextOptionsBuilder contextBuilder, SqlConnectionBuilder sqlBuilder) 
+        /// <param name="dbConfig">Database configuration for connection</param>
+        protected DefaultDbContext(DbContextOptionsBuilder contextBuilder, DatabaseConfiguration dbConfig) 
             : base(contextBuilder.Options)
         {
-            this.SqlConnectionString = sqlBuilder.GetConnectionString();
+            this.SqlConnectionString = dbConfig.GetConnectionString();
 
             contextBuilder
                 .UseLazyLoadingProxies(true)
@@ -37,15 +38,15 @@ namespace MarquitoUtils.Main.Class.Sql
         /// Get database context
         /// </summary>
         /// <typeparam name="DB">The database context type</typeparam>
-        /// <param name="sqlBuilder">Sql connection builder</param>
+        /// <param name="dbConfig">Sql connection builder</param>
         /// <returns>The database context</returns>
-        public static DB GetDbContext<DB>(SqlConnectionBuilder sqlBuilder) 
+        public static DB GetDbContext<DB>(DatabaseConfiguration dbConfig) 
             where DB : DefaultDbContext
         {
             DbContextOptionsBuilder contextBuilder = new DbContextOptionsBuilder<DB>();
-            contextBuilder.UseSqlServer(sqlBuilder.GetConnectionString());
+            contextBuilder.UseSqlServer(dbConfig.GetConnectionString());
 
-            return (DB)Activator.CreateInstance(typeof(DB), contextBuilder, sqlBuilder);
+            return (DB)Activator.CreateInstance(typeof(DB), contextBuilder, dbConfig);
         }
     }
 }

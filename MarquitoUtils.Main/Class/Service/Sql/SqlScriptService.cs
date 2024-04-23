@@ -14,6 +14,7 @@ using MarquitoUtils.Main.Class.Entities.Sql;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MarquitoUtils.Main.Class.Tools;
 using MarquitoUtils.Main.Class.Entities.Sql.Lists;
+using MarquitoUtils.Main.Class.Entities.File;
 
 namespace MarquitoUtils.Main.Class.Service.Sql
 {
@@ -22,19 +23,19 @@ namespace MarquitoUtils.Main.Class.Service.Sql
     /// </summary>
     public class SqlScriptService : DefaultService, ISqlScriptService
     {
-        public string ConnectionString { get; set; }
+        public DatabaseConfiguration DatabaseConfiguration { get; set; }
         public IFileService FileService { get; set; }
         public IEntityService EntityService { get; set; }
 
-        public SqlScriptService(string connectionString)
+        public SqlScriptService(DatabaseConfiguration dbConfig)
         {
-            this.ConnectionString = connectionString;
+            this.DatabaseConfiguration = dbConfig;
             this.FileService = new FileService();
         }
 
-        public SqlScriptService(SqlConnectionBuilder connectionString) : this(connectionString.GetConnectionString())
+        private string GetConnectionString()
         {
-
+            return this.DatabaseConfiguration.GetConnectionString();
         }
 
         // TODO Voir pour avoir des entités (QueryResult) qu'on construit grâce au DataReader et qu'on renvoie
@@ -79,7 +80,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
                     .Append("select * from information_schema.tables where table_name = '")
                     .Append(tableName).Append("'");
 
-            using (SqlConnection connection = new SqlConnection(this.ConnectionString))
+            using (SqlConnection connection = new SqlConnection(this.GetConnectionString()))
             {
                 connection.Open();
 
@@ -120,7 +121,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
 
             if (!scriptAlreadyExecuted)
             {
-                using (SqlConnection connection = new SqlConnection(this.ConnectionString))
+                using (SqlConnection connection = new SqlConnection(this.GetConnectionString()))
                 {
                     connection.Open();
 

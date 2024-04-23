@@ -20,9 +20,13 @@ namespace MarquitoUtils.Main.Class.Entities.File
         /// </summary>
         public string Password { get; }
         /// <summary>
-        /// The server source
+        /// The server name
         /// </summary>
-        public string Source { get; }
+        public string ServerName { get; }
+        /// <summary>
+        /// The server's instance name
+        /// </summary>
+        public string InstanceName { get; }
         /// <summary>
         /// The database's name
         /// </summary>
@@ -35,12 +39,30 @@ namespace MarquitoUtils.Main.Class.Entities.File
         /// <param name="password">The password</param>
         /// <param name="source">The server source</param>
         /// <param name="databaseName">The database's name</param>
-        public DatabaseConfiguration(string user, string password, string source, string databaseName)
+        public DatabaseConfiguration(string user, string password, string serverName, string instanceName, string databaseName)
         {
             this.User = user;
             this.Password = password;
-            this.Source = source;
+            this.ServerName = serverName;
+            this.InstanceName = instanceName;
             this.DatabaseName = databaseName;
+        }
+
+        /// <summary>
+        /// Get connection string for database
+        /// </summary>
+        /// <returns>Connection string for database</returns>
+        public string GetConnectionString()
+        {
+            StringBuilder sbConnectionString = new StringBuilder();
+            sbConnectionString.Append($"Server={this.ServerName}\\{this.InstanceName};")
+                .Append($" Database={this.DatabaseName};")
+                .Append($" User Id={this.User};")
+                .Append($" Password={this.Password};")
+                .Append(" Trusted_Connection=True;")
+                .Append(" Encrypt=False;");
+
+            return sbConnectionString.ToString();
         }
     }
 }
