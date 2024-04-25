@@ -1,4 +1,5 @@
 ﻿using MarquitoUtils.Main.Class.Entities.Sql;
+using MarquitoUtils.Main.Class.Entities.Sql.Translations;
 using MarquitoUtils.Main.Class.Service.Sql;
 using MarquitoUtils.Main.Class.Tools;
 namespace MarquitoUtils.Main.Class.Sql
@@ -36,6 +37,20 @@ namespace MarquitoUtils.Main.Class.Sql
                 .ForEach(prop =>
                 {
                     this.Includes.Add(prop.Name);
+                });
+
+            typeof(T).GetProperties()
+                .Where(prop => prop.PropertyType.IsAnEntityType()).ToList()
+                .ForEach(prop =>
+                {
+                    if (prop.PropertyType.IsEquivalentTo(typeof(TranslationField)))
+                    {
+                        this.Includes.Add($"{prop.Name}.{nameof(TranslationField.Translations)}");
+                    } 
+                    else
+                    {
+                        this.Includes.Add(prop.Name);
+                    }
                 });
         }
 
