@@ -125,7 +125,7 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Import
             {
                 entitiesToImport.ForEach(this.ImportEntity);
 
-                this.ImportService.FlushData();
+                this.ImportService.FlushData(out Exception exception);
             }
         }
 

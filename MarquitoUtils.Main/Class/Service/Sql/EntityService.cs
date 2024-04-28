@@ -221,9 +221,10 @@ namespace MarquitoUtils.Main.Class.Service.Sql
             }
         }
 
-        public bool FlushData()
+        public bool FlushData(out Exception exception)
         {
             bool dataHasFlushed = false;
+            exception = null;
 
             using (IDbContextTransaction ts = this.DbContext.Database.BeginTransaction())
             {
@@ -236,6 +237,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
                 }
                 catch (Exception ex)
                 {
+                    exception = ex;
                     ts.Rollback();
                 }
             }

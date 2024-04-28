@@ -85,11 +85,11 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// <returns>Entities of specific entity type</returns>
         public List<T> GetEntityList<T>(List<Func<T, bool>> filters, ISet<string> includes) 
             where T : Entity, IEntity;
-
         /// <summary>
-        /// Flush data to the database
+        /// Flush data to the database, if any error happen, transaction will be rollback
         /// </summary>
-        /// <returns></returns>
-        public bool FlushData();
+        /// <param name="exception"></param>
+        /// <returns>Return true if it's works without any error</returns>
+        public bool FlushData(out Exception exception);
     }
 }
