@@ -1,6 +1,7 @@
 ﻿using MarquitoUtils.Main.Class.Entities.File;
 using MarquitoUtils.Main.Class.Service.General;
 using System.Reflection;
+using System.Text;
 using System.Xml.Linq;
 
 namespace MarquitoUtils.Main.Class.Service.Files
@@ -57,6 +58,20 @@ namespace MarquitoUtils.Main.Class.Service.Files
 
             fileInfo.CreationTime = creationDate;
             fileInfo.LastWriteTime = updateDate;
+        }
+
+        public byte[] GetFileAsBytes(string fileName)
+        {
+            return File.ReadAllBytes(fileName);
+        }
+
+        public byte[] GetFileAsBytes(string filePath, Assembly assembly)
+        {
+            StringBuilder completeTranslationFilePath = new StringBuilder();
+            completeTranslationFilePath.Append(Directory.GetParent(assembly.Location)
+                .Parent.Parent.Parent.ToString()).Append(filePath);
+
+            return this.GetFileAsBytes(completeTranslationFilePath.ToString());
         }
     }
 }

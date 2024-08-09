@@ -1,4 +1,5 @@
 ﻿using MarquitoUtils.Main.Class.Entities.File;
+using System.Reflection;
 
 namespace MarquitoUtils.Main.Class.Service.Files
 {
@@ -44,5 +45,9 @@ namespace MarquitoUtils.Main.Class.Service.Files
         /// <param name="creationDate">The creation date</param>
         /// <param name="updateDate">The update date</param>
         public void SetCreationAndUpdateDateFileProperty(string fileName, DateTime creationDate, DateTime updateDate);
+
+        public byte[] GetFileAsBytes(string fileName);
+
+        public byte[] GetFileAsBytes(string filePath, Assembly assembly);
     }
 }
