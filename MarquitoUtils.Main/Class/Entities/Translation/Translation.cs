@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using static MarquitoUtils.Main.Class.Enums.EnumLang;
 
@@ -8,6 +9,7 @@ namespace MarquitoUtils.Main.Class.Entities.Translation
     /// <summary>
     /// A translation
     /// </summary>
+    [DebuggerDisplay("Language = {Language}, Class = {ClassFullName}, Key = {TranslationKey}, Value = {TranslationValue}")]
     public class Translation
     {
         /// <summary>

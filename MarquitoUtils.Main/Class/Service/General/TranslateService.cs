@@ -1,6 +1,7 @@
 ﻿using MarquitoUtils.Main.Class.Entities.Translation;
 using MarquitoUtils.Main.Class.Enums;
 using MarquitoUtils.Main.Class.Logger;
+using MarquitoUtils.Main.Class.Service.Files;
 using MarquitoUtils.Main.Class.Tools;
 using System.Globalization;
 using System.Reflection;
@@ -13,7 +14,7 @@ namespace MarquitoUtils.Main.Class.Service.General
     /// <summary>
     /// Translation service
     /// </summary>
-    public class TranslateService : ITranslateService
+    public class TranslateService : FileService, ITranslateService
     {
         /// <summary>
         /// Translations
@@ -136,15 +137,18 @@ namespace MarquitoUtils.Main.Class.Service.General
 
         public List<Translation> GetTranslations(string translationFilePath, Assembly fileAssembly)
         {
-            StringBuilder completeTranslationFilePath = new StringBuilder();
-            completeTranslationFilePath.Append(Directory.GetParent(fileAssembly.Location)
-                .Parent.Parent.Parent.ToString()).Append(translationFilePath);
+            List<Translation> translations = new List<Translation>();
 
-            // Open the xml file
-            XDocument translationXml = XDocument.Load(completeTranslationFilePath.ToString());
+            using (Stream configStream = this.GetFileStreamFromManifest(translationFilePath, fileAssembly))
+            {
+                // Open the xml file
+                XDocument translationXml = XDocument.Load(configStream);
 
-            // Loop of each translation of file
-            return this.GetTranslations(translationXml, fileAssembly);
+                // Loop of each translation of file
+                translations = this.GetTranslations(translationXml, fileAssembly);
+            }
+
+            return translations;
         }
 
         public List<Translation> GetTranslationsFromLocation(string translationFilePath)

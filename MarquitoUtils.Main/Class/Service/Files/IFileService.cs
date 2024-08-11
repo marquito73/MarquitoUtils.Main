@@ -1,4 +1,5 @@
 ﻿using MarquitoUtils.Main.Class.Entities.File;
+using MarquitoUtils.Main.Class.Service.General;
 using System.Reflection;
 
 namespace MarquitoUtils.Main.Class.Service.Files
@@ -6,7 +7,7 @@ namespace MarquitoUtils.Main.Class.Service.Files
     /// <summary>
     /// File service
     /// </summary>
-    public interface IFileService
+    public interface IFileService : DefaultService
     {
         /// <summary>
         /// Get files in directory
@@ -24,6 +25,14 @@ namespace MarquitoUtils.Main.Class.Service.Files
         /// <param name="extension">Extension of files searched</param>
         /// <returns>File path of file inside directory</returns>
         public string GetFilePathInDirectory(string directory, string fileName, string extension = "*");
+
+        /// <summary>
+        /// Get a stream for a file be in the manifest (file as embedded resource)
+        /// </summary>
+        /// <param name="fileName">The file name</param>
+        /// <param name="assembly">The assembly (if null, take the entry assembly)</param>
+        /// <returns>A stream for a file be in the manifest (file as embedded resource)</returns>
+        public Stream GetFileStreamFromManifest(string fileName, Assembly? assembly = null);
 
         /// <summary>
         /// Get the database configuration file of the project launch the application

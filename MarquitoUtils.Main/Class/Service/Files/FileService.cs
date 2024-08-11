@@ -1,5 +1,6 @@
 ﻿using MarquitoUtils.Main.Class.Entities.File;
 using MarquitoUtils.Main.Class.Service.General;
+using MarquitoUtils.Main.Class.Tools;
 using System.Reflection;
 using System.Text;
 using System.Xml.Linq;
@@ -22,6 +23,20 @@ namespace MarquitoUtils.Main.Class.Service.Files
                 .Where(filePath => filePath.Contains(fileName)).First();
         }
 
+        public Stream GetFileStreamFromManifest(string fileName, Assembly? assembly = null)
+        {
+            if (Utils.IsNull(assembly))
+            {
+                assembly = Assembly.GetEntryAssembly();
+            }
+
+            string manifestFileName = assembly.GetManifestResourceNames()
+                .Where(file => file.Contains(fileName.Replace("\\", ".")))
+                .FirstOrDefault();
+
+            return assembly.GetManifestResourceStream(manifestFileName);
+        }
+
         public DatabaseConfiguration GetDefaultDatabaseConfiguration()
         {
             return this.GetDatabaseConfiguration(@"Files\Configuration\Database.config");
@@ -31,22 +46,31 @@ namespace MarquitoUtils.Main.Class.Service.Files
         {
             DatabaseConfiguration databaseConfiguration;
 
-            string fileName = Assembly.GetEntryAssembly().GetManifestResourceNames()
-                .Where(file => file.Contains(databaseConfigurationFileName.Replace("\\", ".")))
-                .FirstOrDefault();
-
-            using (Stream configStream = Assembly.GetEntryAssembly().GetManifestResourceStream(fileName))
+            using (Stream configStream = this.GetFileStreamFromManifest(databaseConfigurationFileName))
             {
                 XDocument configFile = XDocument.Load(configStream);
 
-                XElement databaseNode = configFile.Descendants("Configuration").First().Descendants("Connection").First();
+                IEnumerable<XElement> databaseNodes = configFile.Descendants("Configuration").First().Descendants();
 
-                databaseConfiguration = new DatabaseConfiguration(
-                    databaseNode.Attribute("User").Value,
-                    databaseNode.Attribute("Password").Value, 
-                    databaseNode.Attribute("ServerName").Value,
-                    databaseNode.Attribute("InstanceName").Value,
-                    databaseNode.Attribute("Database").Value);
+                XElement databaseNode;
+
+                if (databaseNodes.Any(elem => elem.Name.LocalName == "Connection"))
+                {
+                    databaseNode = databaseNodes.Where(elem => elem.Name == "Connection").First();
+
+                    databaseConfiguration = new DatabaseConfiguration(
+                        databaseNode.Attribute("User").Value,
+                        databaseNode.Attribute("Password").Value,
+                        databaseNode.Attribute("ServerName").Value,
+                        databaseNode.Attribute("InstanceName").Value,
+                        databaseNode.Attribute("Database").Value);
+                }
+                else
+                {
+                    databaseNode = databaseNodes.Where(elem => elem.Name == "ConnectionString").First();
+
+                    databaseConfiguration = new DatabaseConfiguration(databaseNode.Attribute("ConnectionString").Value);
+                }
             }
 
             return databaseConfiguration;

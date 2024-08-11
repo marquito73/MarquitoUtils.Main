@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MarquitoUtils.Main.Class.Tools;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,6 +32,10 @@ namespace MarquitoUtils.Main.Class.Entities.File
         /// The database's name
         /// </summary>
         public string DatabaseName { get; }
+        /// <summary>
+        /// A connection string, if we need a custom connection differ with this object params
+        /// </summary>
+        public string ConnectionString { get; }
 
         /// <summary>
         /// Database's configuration
@@ -48,6 +53,11 @@ namespace MarquitoUtils.Main.Class.Entities.File
             this.DatabaseName = databaseName;
         }
 
+        public DatabaseConfiguration(string connectionString)
+        {
+            this.ConnectionString = connectionString;
+        }
+
         /// <summary>
         /// Get connection string for database
         /// </summary>
@@ -55,12 +65,20 @@ namespace MarquitoUtils.Main.Class.Entities.File
         public string GetConnectionString()
         {
             StringBuilder sbConnectionString = new StringBuilder();
-            sbConnectionString.Append($"Server={this.ServerName}\\{this.InstanceName};")
-                .Append($" Database={this.DatabaseName};")
-                .Append($" User Id={this.User};")
-                .Append($" Password={this.Password};")
-                .Append(" Trusted_Connection=True;")
-                .Append(" Encrypt=False;");
+
+            if (Utils.IsNotEmpty(this.ConnectionString))
+            {
+                sbConnectionString.Append(ConnectionString);
+            }
+            else
+            {
+                sbConnectionString.Append($"Server={this.ServerName}\\{this.InstanceName};")
+                    .Append($" Database={this.DatabaseName};")
+                    .Append($" User Id={this.User};")
+                    .Append($" Password={this.Password};")
+                    .Append(" Trusted_Connection=True;")
+                    .Append(" Encrypt=False;");
+            }
 
             return sbConnectionString.ToString();
         }

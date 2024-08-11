@@ -1,4 +1,5 @@
 ﻿using MarquitoUtils.Main.Class.Entities.Translation;
+using MarquitoUtils.Main.Class.Service.Files;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,7 +14,7 @@ namespace MarquitoUtils.Main.Class.Service.General
     /// <summary>
     /// Translation service
     /// </summary>
-    public interface ITranslateService : DefaultService
+    public interface ITranslateService : IFileService
     {
         /// <summary>
         /// Get usable language with culture info
