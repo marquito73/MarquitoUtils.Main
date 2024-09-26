@@ -95,7 +95,7 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Import
                     {
                         foreach (PropertyInfo entityProperty in entityProperties.Value)
                         {
-                            Entity subEntity = (Entity)entity.GetFieldValue(entityProperty.Name);
+                            Entity subEntity = (Entity)entity.GetFieldValue<object>(entityProperty.Name);
 
                             if (Utils.IsNotNull(subEntity))
                             {
@@ -154,7 +154,7 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Import
                     if (entityFound.GetType().Equals(property.DeclaringType) 
                         || entityFound.GetType().IsSubclassOf(property.DeclaringType))
                     {
-                        this.SetSimpleProperty(property, entityFound, entityToImport.GetFieldValue(property.Name));
+                        this.SetSimpleProperty(property, entityFound, entityToImport.GetFieldValue<object>(property.Name));
                     }
                     else
                     {
@@ -167,7 +167,7 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Import
                             Entity subEntity = this.GetFirstEntityPropertyOfType(entityToImport, property.DeclaringType);
 
                             this.SetEntityProperty(property, entityFound,
-                                subEntity.GetFieldValue(property.Name));
+                                subEntity.GetFieldValue<object>(property.Name));
                         }
                     }
                 }
@@ -195,7 +195,7 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Import
         /// <param name="value">The value</param>
         private void SetSimpleProperty(PropertyInfo property, Entity entity, object value)
         {
-            object fieldValue = entity.GetFieldValue(property.Name);
+            object fieldValue = entity.GetFieldValue<object>(property.Name);
             if (Utils.IsNull(fieldValue) || !fieldValue.Equals(value))
             {
                 if (property.PropertyType.IsDateTimeType() && property.PropertyType.IsNullableType())
@@ -243,16 +243,16 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Import
             {
                 if (this.DependentColumnIsValid(entity, firstEntityProperty))
                 {
-                    Entity subEntity = (Entity)entity.GetFieldValue(firstEntityProperty.Name);
+                    Entity subEntity = entity.GetFieldValue<Entity>(firstEntityProperty.Name);
 
                     if (Utils.IsNull(subEntity))
                     {
                         entity.SetFieldValue(firstEntityProperty.Name, Activator.CreateInstance(firstEntityProperty.PropertyType));
 
-                        subEntity = (Entity)entity.GetFieldValue(firstEntityProperty.Name);
+                        subEntity = entity.GetFieldValue<Entity>(firstEntityProperty.Name);
                     }
 
-                    object fieldValue = subEntity.GetFieldValue(property.Name);
+                    object fieldValue = subEntity.GetFieldValue<object>(property.Name);
 
                     if (Utils.IsNull(fieldValue) || !fieldValue.Equals(value))
                     {
@@ -277,7 +277,7 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Import
                 DependencyColumnAttribute dependencyColumn = prop.GetCustomAttribute<DependencyColumnAttribute>();
 
                 dependentColumnIsValid = dependencyColumn.DependentValue
-                    .Equals(entity.GetFieldValue(dependencyColumn.ColumnName));
+                    .Equals(entity.GetFieldValue<object>(dependencyColumn.ColumnName));
             }
 
             return dependentColumnIsValid;
@@ -295,7 +295,7 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Import
                 .Where(prop => prop.PropertyType.Equals(entityType))
                 .FirstOrDefault();
 
-            return (Entity)entity.GetFieldValue(firstEntityProperty.Name);
+            return entity.GetFieldValue<Entity>(firstEntityProperty.Name);
         }
 
         #endregion Set a property

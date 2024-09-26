@@ -89,15 +89,9 @@ namespace MarquitoUtils.Main.Class.Enums
             return enumMap;
         }
 
-        public static E GetEnumByName<E, A>(string name)
-            where E : struct, IConvertible
-            where A : EnumClass, IEnumAttribute
+        public static E GetEnumByName<E>(string name)
+            where E : struct, Enum, IConvertible
         {
-            // The enum
-            E enumValue = default(E);
-            // The enum sorted map
-            List<E> enumList = GetEnumList<E, A>();
-
             return (E) Enum.Parse(typeof(E), name);
         }
 

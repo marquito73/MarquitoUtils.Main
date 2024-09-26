@@ -1,10 +1,10 @@
 ﻿using MarquitoUtils.Main.Class.Entities.Sql;
+using MarquitoUtils.Main.Class.Entities.Sql.Translations;
 using MarquitoUtils.Main.Class.Sql;
 using MarquitoUtils.Main.Class.Tools;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using NPOI.SS.Formula.Functions;
-using System.Reflection;
 
 namespace MarquitoUtils.Main.Class.Service.Sql
 {
@@ -18,10 +18,41 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// </summary>
         public DefaultDbContext DbContext { get; set; }
 
+        private ISet<string> GetIncludes<T>()
+        {
+            ISet<string> includes = new HashSet<string>();
+
+            // Get list properties, and includes data
+            typeof(T).GetProperties()
+                .Where(prop => Utils.IsGenericCollectionType(prop.PropertyType)).ToList()
+                .ForEach(prop =>
+                {
+                    includes.Add(prop.Name);
+                });
+
+            typeof(T).GetProperties()
+                .Where(prop => prop.PropertyType.IsAnEntityType()).ToList()
+                .ForEach(prop =>
+                {
+                    if (prop.PropertyType.IsEquivalentTo(typeof(TranslationField)))
+                    {
+                        includes.Add(prop.Name);
+                        includes.Add($"{prop.Name}.{nameof(TranslationField.Translations)}");
+                    }
+                    else
+                    {
+                        includes.Add(prop.Name);
+                    }
+                });
+
+            return includes;
+        }
+
         public T? FindEntityById<T>(int id) 
             where T : Entity, IEntity
         {
-            return this.GetEntityList<T>().SingleOrDefault(entity => entity.Id == id);
+            return this.GetEntityList<T>(new List<Func<T, bool>>(), this.GetIncludes<T>())
+                .SingleOrDefault(entity => entity.Id == id);
         }
 
         public List<T> FindEntitiesByIds<T>(List<int> ids)
@@ -84,14 +115,14 @@ namespace MarquitoUtils.Main.Class.Service.Sql
                 if (typeof(T).Equals(constraint.OwnerType))
                 {
                     // The constraint apply to the entity
-                    fieldValue = entity.GetFieldValue(constraint.PropertyName);
+                    fieldValue = entity.GetFieldValue<object>(constraint.PropertyName);
                 }
                 else
                 {
                     // The constraint apply to a sub entity
-                    Entity subEntity = (Entity)entity.GetFieldValue(constraint.ParentPropertyName);
+                    Entity subEntity = entity.GetFieldValue<Entity>(constraint.ParentPropertyName);
 
-                    fieldValue = subEntity.GetFieldValue(constraint.PropertyName);
+                    fieldValue = subEntity.GetFieldValue<object>(constraint.PropertyName);
                 }
 
                 if (fieldValue is string)

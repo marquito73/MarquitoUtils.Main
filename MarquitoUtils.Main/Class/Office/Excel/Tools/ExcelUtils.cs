@@ -123,7 +123,7 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Tools
                         DependencyColumnAttribute dependencyColumn = prop.GetCustomAttribute<DependencyColumnAttribute>();
 
                         dependentColumnIsValid = dependencyColumn.DependentValue
-                            .Equals(entity.GetFieldValue(dependencyColumn.ColumnName));
+                            .Equals(entity.GetFieldValue<object>(dependencyColumn.ColumnName));
                     }
 
                     return dependentColumnIsValid;

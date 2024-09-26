@@ -9,47 +9,24 @@ namespace MarquitoUtils.Main.Class.Tools.Encryption
 {
     public class Encrypter
     {
-        public static string EncryptString(string strToEncrypt)
+        /// <summary>
+        /// Hash a password
+        /// </summary>
+        /// <param name="password">The password</param>
+        /// <returns>The password hashed</returns>
+        public static string HashPassword(string password)
         {
-            /*StringBuilder Sb = new StringBuilder();
-
-            using (SHA256 hash = SHA256.Create())
+            using (SHA256 sha256 = SHA256.Create())
             {
-                Encoding enc = Encoding.UTF8;
-                byte[] result = hash.ComputeHash(enc.GetBytes(strToEncrypt));
+                // Convert password to byte array
+                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                // Convert bytes to string
+                StringBuilder builder = new StringBuilder();
+                // Convert to hexadecimal
+                bytes.ToList().ForEach(x => builder.Append(x.ToString("x2")));
 
-                foreach (byte b in result)
-                    Sb.Append(b.ToString("x2"));
+                return builder.ToString();
             }
-
-            return Sb.ToString();*/
-
-            byte[] result = Utils.GetAsBytes(strToEncrypt);
-
-            AesCng aes = new AesCng();
-            aes.EncryptEcb(result, PaddingMode.None);
-
-            return "";
-
-
-
-            //byte[] encryptedData = RSAEncrypt(dataToEncrypt, RSA.ExportParameters(false), false);
-        }
-
-        public static string DecryptString(string strToDecrypt)
-        {
-            StringBuilder Sb = new StringBuilder();
-
-            using (SHA256 hash = SHA256.Create())
-            {
-                Encoding enc = Encoding.UTF8;
-                byte[] result = hash.ComputeHash(enc.GetBytes(strToDecrypt));
-
-                foreach (byte b in result)
-                    Sb.Append(b.ToString("x2"));
-            }
-
-            return Sb.ToString();
         }
     }
 }

@@ -45,6 +45,7 @@ namespace MarquitoUtils.Main.Class.Sql
                 {
                     if (prop.PropertyType.IsEquivalentTo(typeof(TranslationField)))
                     {
+                        this.Includes.Add(prop.Name);
                         this.Includes.Add($"{prop.Name}.{nameof(TranslationField.Translations)}");
                     } 
                     else
@@ -147,7 +148,7 @@ namespace MarquitoUtils.Main.Class.Sql
 
             if (propertiesNames.Count == 1)
             {
-                equalFilter = entity => entity.GetFieldValue(propertyName).Equals(propertyValue);
+                equalFilter = entity => entity.GetFieldValue<object>(propertyName).Equals(propertyValue);
                 switch (filterType)
                 {
                     case FilterType.IS_EQUAL:
@@ -178,11 +179,11 @@ namespace MarquitoUtils.Main.Class.Sql
                         break;
                     case FilterType.IS_IN:
                         equalFilter = entity => ((List<object>)propertyValue)
-                        .Contains(entity.GetFieldValue(propertyName));
+                        .Contains(entity.GetFieldValue<object>(propertyName));
                         break;
                     case FilterType.IS_NOT_IN:
                         equalFilter = entity => !((List<object>)propertyValue)
-                        .Contains(entity.GetFieldValue(propertyName));
+                        .Contains(entity.GetFieldValue<object>(propertyName));
                         break;
                     case FilterType.IS_LIKE:
                         equalFilter = entity => this.IsLikeValue(entity, propertyName,
@@ -203,7 +204,7 @@ namespace MarquitoUtils.Main.Class.Sql
                     {
                         if (!cpt.Equals(propertiesNames.Count))
                         {
-                            includeEntity = (Entity)includeEntity.GetFieldValue(property);
+                            includeEntity = (Entity)includeEntity.GetFieldValue<object>(property);
                         }
                         else
                         {
@@ -212,30 +213,30 @@ namespace MarquitoUtils.Main.Class.Sql
                                 case FilterType.IS_EQUAL:
                                     if (propertyValue is string)
                                     {
-                                        result = ((string)includeEntity.GetFieldValue(property)).Trim().Equals(((string)propertyValue).Trim());
+                                        result = ((string)includeEntity.GetFieldValue<object>(property)).Trim().Equals(((string)propertyValue).Trim());
                                     }
                                     else
                                     {
-                                        result = includeEntity.GetFieldValue(property).Equals(propertyValue);
+                                        result = includeEntity.GetFieldValue<object>(property).Equals(propertyValue);
                                     }
                                     break;
                                 case FilterType.IS_NOT_EQUAL:
                                     if (propertyValue is string)
                                     {
-                                        result = ((string)includeEntity.GetFieldValue(property)).Trim().Equals(((string)propertyValue).Trim());
+                                        result = ((string)includeEntity.GetFieldValue<object>(property)).Trim().Equals(((string)propertyValue).Trim());
                                     }
                                     else
                                     {
-                                        result = includeEntity.GetFieldValue(property).Equals(propertyValue);
+                                        result = includeEntity.GetFieldValue<object>(property).Equals(propertyValue);
                                     }
                                     break;
                                 case FilterType.IS_IN:
                                     result = ((List<object>)propertyValue)
-                                    .Contains(includeEntity.GetFieldValue(property));
+                                    .Contains(includeEntity.GetFieldValue<object>(property));
                                     break;
                                 case FilterType.IS_NOT_IN:
                                     result = !((List<object>)propertyValue)
-                                    .Contains(includeEntity.GetFieldValue(property));
+                                    .Contains(includeEntity.GetFieldValue<object>(property));
                                     break;
                                 case FilterType.IS_LIKE:
                                     result = this.IsLikeValue(includeEntity, property, Utils.GetAsString(propertyValue),
@@ -268,7 +269,7 @@ namespace MarquitoUtils.Main.Class.Sql
         {
             bool result = false;
 
-            string strEntityValue = Utils.GetAsString(entity.GetFieldValue(propertyName)).Trim();
+            string strEntityValue = entity.GetFieldValue<string>(propertyName).Trim();
 
             string valueWithoutSpaces = propertyLikeValue.Trim();
 

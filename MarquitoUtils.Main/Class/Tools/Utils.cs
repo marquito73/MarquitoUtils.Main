@@ -1,9 +1,11 @@
 ﻿using MarquitoUtils.Main.Class.Entities.Image;
 using MarquitoUtils.Main.Class.Entities.Param;
 using MarquitoUtils.Main.Class.Entities.Sql;
+using MarquitoUtils.Main.Class.Sql;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Data.Entity;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -614,6 +616,11 @@ namespace MarquitoUtils.Main.Class.Tools
         public static List<string> Split(string originString, string separator)
         {
             return originString.Split(separator).ToList();
+        }
+
+        public static Type GetType<TTypeInSameAssembly>(string typeName)
+        {
+            return Assembly.GetAssembly(typeof(TTypeInSameAssembly)).GetType(typeName); ;
         }
     }
 }

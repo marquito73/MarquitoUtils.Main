@@ -84,17 +84,17 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Export
 
                         if (entityType.Equals(property.DeclaringType) || entityType.IsSubclassOf(property.DeclaringType))
                         {
-                            cell.Value = entity.GetFieldValue(property.Name);
+                            cell.Value = entity.GetFieldValue<object>(property.Name);
                         }
                         else
                         {
                             PropertyInfo subEntityProperty = entityType.GetFirstPropertyOfType(property.DeclaringType);
 
-                            Entity subEntity = ((Entity)entity.GetFieldValue(subEntityProperty.Name));
+                            Entity subEntity = ((Entity)entity.GetFieldValue<object>(subEntityProperty.Name));
 
                             if (Utils.IsNotNull(subEntity))
                             {
-                                cell.Value = subEntity.GetFieldValue(property.Name);
+                                cell.Value = subEntity.GetFieldValue<object>(property.Name);
                             }
                         }
 

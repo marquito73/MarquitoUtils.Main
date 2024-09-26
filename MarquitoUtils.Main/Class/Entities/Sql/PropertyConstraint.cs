@@ -60,7 +60,7 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
         public PropertyConstraint(Entity entity, string propertyName, string parentPropertyName = "", bool caseSensitive = true)
         {
             this.PropertyName = propertyName;
-            this.Value = entity.GetFieldValue(propertyName);
+            this.Value = entity.GetFieldValue<object>(propertyName);
             this.OwnerType = entity.GetType();
             this.ParentPropertyName = parentPropertyName;
             this.CaseSensitive = caseSensitive;

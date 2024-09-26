@@ -33,17 +33,16 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
             return this.GetPropertyInfo(fieldName).PropertyType;
         }
 
-        public object GetFieldValue(string fieldName)
+        public T GetFieldValue<T>(string fieldName)
         {
-            return this.GetPropertyInfo(fieldName).GetValue(this, null);
+            return (T) this.GetPropertyInfo(fieldName).GetValue(this, null);
         }
 
         public bool FieldEquals<TFieldType>(string fieldName, TFieldType value, bool TrimIfString = false)
         {
             bool fieldEquals;
 
-            //TrimIfString
-            TFieldType fieldValue = (TFieldType)this.GetFieldValue(fieldName);
+            TFieldType fieldValue = this.GetFieldValue<TFieldType>(fieldName);
 
             if (Utils.IsNotNull(fieldValue))
             {
@@ -128,7 +127,7 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
                             DependencyColumnAttribute dependencyColumn = prop.GetCustomAttribute<DependencyColumnAttribute>();
 
                             dependentColumnIsValid = dependencyColumn.DependentValue
-                                .Equals(this.GetFieldValue(dependencyColumn.ColumnName));
+                                .Equals(this.GetFieldValue<object>(dependencyColumn.ColumnName));
                         }
 
                         return dependentColumnIsValid;
@@ -139,7 +138,7 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
 
                         ForeignKeyAttribute foreignKey = prop.GetCustomAttribute<ForeignKeyAttribute>();
 
-                        Entity subEntity = (Entity)this.GetFieldValue(foreignKey.Name);
+                        Entity subEntity = (Entity)this.GetFieldValue<object>(foreignKey.Name);
 
                         return subEntity.GetType().GetProperties()
                             .Where(subProp => !subProp.Name.Equals(nameof(this.Id)))
@@ -160,7 +159,7 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
         {
             EnumContentType contentType;
 
-            object value = this.GetFieldValue(columnName);
+            object value = this.GetFieldValue<object>(columnName);
 
             switch (this.GetDataType(columnName))
             {
