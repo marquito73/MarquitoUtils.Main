@@ -174,7 +174,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
 
         public List<T> GetEntityList<T>() where T : Entity, IEntity
         {
-            return this.GetEntityList<T>(new List<Func<T, bool>>(), new HashSet<string>());
+            return this.GetEntityList<T>(new List<Func<T, bool>>(), this.GetIncludes<T>());
         }
 
         public List<T> GetEntityList<T>(List<Func<T, bool>> filters, ISet<string> includes) where T : Entity, IEntity
