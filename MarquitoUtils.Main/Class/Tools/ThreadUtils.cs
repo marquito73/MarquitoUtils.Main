@@ -29,7 +29,7 @@ namespace MarquitoUtils.Main.Class.Tools
                 {
                     try
                     {
-                        // Make action for the thrad
+                        // Make action for the thread
                         threadAction();
                         // This thread is in loop, cadenced by specific time
                         Thread.Sleep(millisecondsDelay);
@@ -37,6 +37,30 @@ namespace MarquitoUtils.Main.Class.Tools
                     {
                         // We go here when we ask to thread to stop
                         threadIsOk = false;
+                    }
+                }
+            });
+        }
+
+        public static Thread GetThread(Action threadAction, Action<Exception>? errorAction = null)
+        {
+            return new Thread(() =>
+            {
+                bool threadIsOk = true;
+
+                try
+                {
+                    // Make action for the thread
+                    threadAction();
+                }
+                catch (Exception ex)
+                {
+                    // We go here when we ask to thread to stop
+                    threadIsOk = false;
+
+                    if (Utils.IsNotNull(errorAction))
+                    {
+                        errorAction(ex);
                     }
                 }
             });

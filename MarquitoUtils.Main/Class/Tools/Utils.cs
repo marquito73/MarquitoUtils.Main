@@ -282,6 +282,21 @@ namespace MarquitoUtils.Main.Class.Tools
         /// </summary>
         /// <param name="data">String data</param>
         /// <returns>String converted to integer</returns>
+        public static short GetAsShort(string data)
+        {
+            short sReturn = 0;
+
+            if (IsNullOrEmpty(data)) data = "0";
+            sReturn = Convert.ToInt16(data);
+
+            return sReturn;
+        }
+
+        /// <summary>
+        /// Can convert string to integer
+        /// </summary>
+        /// <param name="data">String data</param>
+        /// <returns>String converted to integer</returns>
         public static int GetAsInteger(string data)
         {
             int iReturn = 0;
