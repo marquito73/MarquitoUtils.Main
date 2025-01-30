@@ -1,6 +1,8 @@
 ﻿using MarquitoUtils.Main.Class.Entities.File;
 using MarquitoUtils.Main.Class.Service.General;
 using MarquitoUtils.Main.Class.Tools;
+using Microsoft.SqlServer.Management.HadrData;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Xml.Linq;
@@ -12,6 +14,13 @@ namespace MarquitoUtils.Main.Class.Service.Files
     /// </summary>
     public class FileService : DefaultService, IFileService
     {
+        private readonly List<string> TextExtensions = new List<string>()
+        {
+            "txt",
+            "js",
+            "css",
+        };
+
         public List<string> GetFilesInDirectory(string directory, string extension = "*")
         {
             return Directory.GetFiles(directory, $"*.{extension}", SearchOption.AllDirectories).ToList();
@@ -35,6 +44,26 @@ namespace MarquitoUtils.Main.Class.Service.Files
                 .FirstOrDefault();
 
             return assembly.GetManifestResourceStream(manifestFileName);
+        }
+
+        public CustomFile GetFileStreamFromManifest(string fileName, string extension, Assembly? assembly = null)
+        {
+            CustomFile file;
+
+            if (this.TextExtensions.Contains(extension))
+            {
+                // We can read file as text
+                using (StreamReader reader = new StreamReader(this.GetFileStreamFromManifest(fileName, assembly)))
+                {
+                    file = new CustomFile(fileName, extension, reader.ReadToEnd());
+                }
+            }
+            else
+            {
+                file = new CustomFile(fileName, extension, Utils.ReadAllBytes(this.GetFileStreamFromManifest(fileName, assembly)));
+            }
+
+            return file;
         }
 
         public DatabaseConfiguration GetDefaultDatabaseConfiguration()

@@ -1,6 +1,7 @@
 ﻿using MarquitoUtils.Main.Class.Entities.File;
 using MarquitoUtils.Main.Class.Entities.Sql;
 using MarquitoUtils.Main.Class.Entities.Sql.Translations;
+using MarquitoUtils.Main.Class.Entities.Sql.UserTracking;
 using MarquitoUtils.Main.Class.Tools;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,9 +19,10 @@ namespace MarquitoUtils.Main.Class.Sql
         /// <summary>
         /// Database set of script histories
         /// </summary>
-        public DbSet<ScriptHistory> ScriptHistories { get; set; }
+        public DbSet<ScriptHistory> ScriptHistory { get; set; }
         public DbSet<Translation> Translations { get; set; }
         public DbSet<TranslationField> TranslationsFields { get; set; }
+        public DbSet<UserTrackHistory> UserTrackHistory { get; set; }
 
         /// <summary>
         /// Main constructor of default database context

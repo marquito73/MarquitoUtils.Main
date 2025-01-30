@@ -9,11 +9,13 @@
   <ItemGroup>
     <None Remove="Files\Sql\Main\001_ScriptHistory.sql" />
     <None Remove="Files\Sql\Main\002_Translations.sql" />
+    <None Remove="Files\Sql\Main\003_UserTrackHistory.sql" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Files\Sql\Main\001_ScriptHistory.sql" />
     <EmbeddedResource Include="Files\Sql\Main\002_Translations.sql" />
+    <EmbeddedResource Include="Files\Sql\Main\003_UserTrackHistory.sql" />
   </ItemGroup>
 
   <ItemGroup>

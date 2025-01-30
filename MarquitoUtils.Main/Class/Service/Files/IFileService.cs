@@ -34,6 +34,8 @@ namespace MarquitoUtils.Main.Class.Service.Files
         /// <returns>A stream for a file be in the manifest (file as embedded resource)</returns>
         public Stream GetFileStreamFromManifest(string fileName, Assembly? assembly = null);
 
+        public CustomFile GetFileStreamFromManifest(string fileName, string extension, Assembly? assembly = null);
+
         /// <summary>
         /// Get the database configuration file of the project launch the application
         /// </summary>

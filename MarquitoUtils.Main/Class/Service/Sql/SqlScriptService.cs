@@ -1,17 +1,8 @@
 ﻿using MarquitoUtils.Main.Class.Service.Files;
 using MarquitoUtils.Main.Class.Service.General;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.SqlServer.Management.Common;
-using Microsoft.SqlServer.Management.Smo;
 using Microsoft.Data.SqlClient;
-using MarquitoUtils.Main.Class.Logger;
 using MarquitoUtils.Main.Class.Entities.Sql;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MarquitoUtils.Main.Class.Tools;
 using MarquitoUtils.Main.Class.Entities.Sql.Lists;
 using MarquitoUtils.Main.Class.Entities.File;

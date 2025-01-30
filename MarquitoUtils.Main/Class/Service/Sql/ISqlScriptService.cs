@@ -1,18 +1,13 @@
 ﻿using MarquitoUtils.Main.Class.Entities.File;
 using MarquitoUtils.Main.Class.Service.Files;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using MarquitoUtils.Main.Class.Service.General;
 
 namespace MarquitoUtils.Main.Class.Service.Sql
 {
     /// <summary>
     /// Service for SQL
     /// </summary>
-    public interface ISqlScriptService
+    public interface ISqlScriptService : DefaultService
     {
         /// <summary>
         /// The configuration for connect to the database
