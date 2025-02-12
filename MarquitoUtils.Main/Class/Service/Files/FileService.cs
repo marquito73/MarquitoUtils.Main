@@ -14,7 +14,7 @@ namespace MarquitoUtils.Main.Class.Service.Files
     /// </summary>
     public class FileService : DefaultService, IFileService
     {
-        private readonly List<string> TextExtensions = new List<string>()
+        protected readonly List<string> TextExtensions = new List<string>()
         {
             "txt",
             "js",
