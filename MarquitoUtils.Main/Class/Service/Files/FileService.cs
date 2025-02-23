@@ -5,7 +5,9 @@ using Microsoft.SqlServer.Management.HadrData;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace MarquitoUtils.Main.Class.Service.Files
 {
@@ -64,6 +66,27 @@ namespace MarquitoUtils.Main.Class.Service.Files
             }
 
             return file;
+        }
+
+        public T GetDataFromXMLFile<T>(string filename)
+            where T : class, new()
+        {
+            T data;
+
+            using (Stream fileStream = this.GetFileStreamFromManifest(filename))
+            {
+                XmlDocument xmlDocument = new XmlDocument();
+                xmlDocument.Load(fileStream);
+
+                XmlSerializer serializer = new XmlSerializer(typeof(T));
+                using (XmlReader reader = new XmlNodeReader(xmlDocument))
+                {
+                    data = (T) serializer.Deserialize(reader);
+                }
+            }
+
+
+            return data;
         }
 
         public DatabaseConfiguration GetDefaultDatabaseConfiguration()

@@ -19,7 +19,7 @@ namespace MarquitoUtils.Main.Class.Tools
         /// <param name="threadAction">The code to execute for this thread</param>
         /// <returns></returns>
         public static Thread GetCyclicThread(int millisecondsDelay,
-            Action threadAction)
+            Action<object[]> threadAction, params object[] parameters)
         {
             return new Thread(() =>
             {
@@ -30,7 +30,7 @@ namespace MarquitoUtils.Main.Class.Tools
                     try
                     {
                         // Make action for the thread
-                        threadAction();
+                        threadAction(parameters);
                         // This thread is in loop, cadenced by specific time
                         Thread.Sleep(millisecondsDelay);
                     } catch (Exception ex)

@@ -164,11 +164,8 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// <param name="scriptName"></param>
         private void AddNewScriptHistory(string scriptName)
         {
-            if (!scriptName.Equals("001_ScriptHistory", StringComparison.OrdinalIgnoreCase))
-            {
-                ScriptHistory history = new ScriptHistory(scriptName, DateTime.UtcNow);
-                this.EntityService.PersistEntity(history);
-            }
+            ScriptHistory history = new ScriptHistory(scriptName, DateTime.UtcNow);
+            this.EntityService.PersistEntity(history);
         }
     }
 }

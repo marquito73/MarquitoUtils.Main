@@ -37,6 +37,14 @@ namespace MarquitoUtils.Main.Class.Service.Files
         public CustomFile GetFileStreamFromManifest(string fileName, string extension, Assembly? assembly = null);
 
         /// <summary>
+        /// Get typed object from an XML file
+        /// </summary>
+        /// <typeparam name="T">The type of the object returned</typeparam>
+        /// <param name="filename">The XML filename</param>
+        /// <returns>Typed object from an XML file</returns>
+        public T GetDataFromXMLFile<T>(string filename) where T : class, new();
+
+        /// <summary>
         /// Get the database configuration file of the project launch the application
         /// </summary>
         /// <returns>The database configuration file of the project launch the application</returns>

@@ -70,16 +70,16 @@ namespace MarquitoUtils.Main.Class.Service.Sql
             return entitiesFound;
         }
 
-        public T FindEntityByUniqueConstraint<T>(List<PropertyConstraint> constraints) 
+        public T? FindEntityByUniqueConstraint<T>(List<PropertyConstraint> constraints) 
             where T : Entity, IEntity
         {
             return this.FindEntityByUniqueConstraint<T>(constraints.ToArray());
         }
 
-        public T FindEntityByUniqueConstraint<T>(params PropertyConstraint[] constraints) 
+        public T? FindEntityByUniqueConstraint<T>(params PropertyConstraint[] constraints) 
             where T : Entity, IEntity
         {
-            T entity = null;
+            T? entity = null;
 
             List<T> entities = this.GetEntityList<T>();
 
