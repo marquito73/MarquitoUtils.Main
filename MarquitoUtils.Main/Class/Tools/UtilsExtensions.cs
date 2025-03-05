@@ -118,5 +118,10 @@ namespace MarquitoUtils.Main.Class.Tools
         {
             return assembly.GetTypes().Any(type => type.FullName.Equals(typeFullName));
         }
+
+        public static Dictionary<K, V> ToDictionnary<K,V>(this IEnumerable<KeyValuePair<K,V>> mapList)
+        {
+            return mapList.ToDictionary(x => x.Key, x => x.Value);
+        }
     }
 }

@@ -29,5 +29,11 @@ namespace MarquitoUtils.Main.Class.Enums
         {
             return enumeration.ToString();
         }
+
+        public static List<TEnum> GetList<TEnum>()
+            where TEnum : struct, Enum
+        {
+            return Enum.GetValues<TEnum>().ToList();
+        }
     }
 }
