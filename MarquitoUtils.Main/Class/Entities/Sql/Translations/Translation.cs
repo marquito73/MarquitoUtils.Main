@@ -22,7 +22,7 @@ namespace MarquitoUtils.Main.Class.Entities.Sql.Translations
         /// </summary>
         [Column("language", TypeName = "tinyint"), Required]
         [Index("ix_translation", 1, IsUnique = true)]
-        public enumLang Language { get; set; }
+        public LanguageType Language { get; set; }
         /// <summary>
         /// Id of translation field
         /// </summary>

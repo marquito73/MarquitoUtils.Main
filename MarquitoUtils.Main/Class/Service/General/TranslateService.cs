@@ -31,23 +31,23 @@ namespace MarquitoUtils.Main.Class.Service.General
             this.Translations = Translations;
         }
 
-        public enumLang GetLanguageWithCultureInfo(CultureInfo culture)
+        public LanguageType GetLanguageWithCultureInfo(CultureInfo culture)
         {
             string languageISOcode = culture.TwoLetterISOLanguageName;
 
-            return Enum.GetValues(typeof(enumLang))
-                .Cast<enumLang>()
+            return Enum.GetValues(typeof(LanguageType))
+                .Cast<LanguageType>()
                 .Where(lang => lang.ToString().ToUpper().Equals(languageISOcode.ToUpper()))
-                .FirstOrDefault(enumLang.EN);
+                .FirstOrDefault(LanguageType.EN);
         }
 
         public string GetTranslation<T>(string translationKey)
         {
-            return this.GetTranslation<T>(translationKey, enumLang.EN);
+            return this.GetTranslation<T>(translationKey, LanguageType.EN);
         }
 
         public string GetTranslation<T>(string translationKey,
-            enumLang language)
+            LanguageType language)
         {
             string translationFound;
 
@@ -93,10 +93,10 @@ namespace MarquitoUtils.Main.Class.Service.General
             translationXml.Add(rootElement);
 
             // Loop each languages
-            List<enumLang> languages = translations.Select(translation => translation.Language)
+            List<LanguageType> languages = translations.Select(translation => translation.Language)
                 .Distinct().Order().ToList();
 
-            foreach (enumLang language in languages)
+            foreach (LanguageType language in languages)
             {
                 // Language element, with language type attribute
                 XElement languageElement = new XElement("Language");
@@ -173,7 +173,7 @@ namespace MarquitoUtils.Main.Class.Service.General
                 foreach (XElement langNode in appNode.Descendants("Language"))
                 {
                     // The language
-                    enumLang lang = Enum.Parse<enumLang>(langNode.Attribute("lang").Value);
+                    LanguageType lang = Enum.Parse<LanguageType>(langNode.Attribute("lang").Value);
                     // Loop of each class
                     foreach (XElement clsNode in langNode.Descendants("Class"))
                     {

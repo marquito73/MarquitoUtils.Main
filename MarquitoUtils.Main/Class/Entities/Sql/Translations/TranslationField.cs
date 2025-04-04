@@ -48,13 +48,13 @@ namespace MarquitoUtils.Main.Class.Entities.Sql.Translations
 
         }
 
-        public string GetTranslation(enumLang language)
+        public string GetTranslation(LanguageType language)
         {
             return this.Translations.Where(translation => translation.Language.Equals(language))
                 .Select(translation => translation.TranslationContent).FirstOrDefault();
         }
 
-        public void SetTranslation(enumLang language, string translation)
+        public void SetTranslation(LanguageType language, string translation)
         {
             this.Translations.Where(translation => translation.Language.Equals(language))
                 .First().TranslationContent = translation;

@@ -15,7 +15,7 @@ namespace MarquitoUtils.Main.Class.Enums
         /// <summary>
         /// Enumeration regroups languages
         /// </summary>
-        public enum enumLang
+        public enum LanguageType
         {
             /// <summary>
             /// English
@@ -30,13 +30,13 @@ namespace MarquitoUtils.Main.Class.Enums
 
     public static class EnumLangExtensions
     {
-        public static string GetIsoCountryCode(this enumLang language)
+        public static string GetIsoCountryCode(this LanguageType language)
         {
             string isoCountryCode;
 
             switch (language)
             {
-                case enumLang.EN:
+                case LanguageType.EN:
                     isoCountryCode = "GB";
                     break;
                 default:

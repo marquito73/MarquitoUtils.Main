@@ -21,7 +21,7 @@ namespace MarquitoUtils.Main.Class.Service.General
         /// </summary>
         /// <param name="culture">Culture info</param>
         /// <returns>Usable language</returns>
-        public enumLang GetLanguageWithCultureInfo(CultureInfo culture);
+        public LanguageType GetLanguageWithCultureInfo(CultureInfo culture);
         /// <summary>
         /// Get translation for a class and a translation key
         /// </summary>
@@ -38,7 +38,7 @@ namespace MarquitoUtils.Main.Class.Service.General
         /// <param name="language">The language for translate</param>
         /// <returns>The translation</returns>
         public string GetTranslation<T>(string translationKey, 
-            enumLang language);
+            LanguageType language);
 
         /// <summary>
         /// Save translations

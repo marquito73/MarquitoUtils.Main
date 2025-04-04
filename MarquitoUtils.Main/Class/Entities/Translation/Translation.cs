@@ -20,7 +20,7 @@ namespace MarquitoUtils.Main.Class.Entities.Translation
         /// <summary>
         /// Language of translation
         /// </summary>
-        public enumLang Language { get; set; }
+        public LanguageType Language { get; set; }
 
         /// <summary>
         /// Class of translation
@@ -55,7 +55,7 @@ namespace MarquitoUtils.Main.Class.Entities.Translation
         /// <param name="fullClassName">Full name of the class for this translation</param>
         /// <param name="translationKey">The translation key</param>
         /// <param name="translationValue">The label translation</param>
-        public Translation(string originApp, enumLang language, Type cls, string fullClassName, 
+        public Translation(string originApp, LanguageType language, Type cls, string fullClassName, 
             string translationKey, string translationValue)
         {
             this.OriginApp = originApp;
