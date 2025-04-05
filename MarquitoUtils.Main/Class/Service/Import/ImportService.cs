@@ -27,7 +27,7 @@ namespace MarquitoUtils.Main.Class.Service.Import
             return (method.Invoke(this, new object[] { id }) as Entity);
         }
 
-        public Entity FindEntityByUniqueConstraint(List<PropertyConstraint> constraints, Type entityType)
+        public Entity FindEntityByUniqueConstraint(List<PropertyConstraint<Entity>> constraints, Type entityType)
         {
             // Get the generic type definition
             MethodInfo method = base.GetType().GetMethods()

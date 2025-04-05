@@ -70,13 +70,13 @@ namespace MarquitoUtils.Main.Class.Service.Sql
             return entitiesFound;
         }
 
-        public T? FindEntityByUniqueConstraint<T>(List<PropertyConstraint> constraints) 
+        public T? FindEntityByUniqueConstraint<T>(List<PropertyConstraint<T>> constraints) 
             where T : Entity, IEntity
         {
             return this.FindEntityByUniqueConstraint<T>(constraints.ToArray());
         }
 
-        public T? FindEntityByUniqueConstraint<T>(params PropertyConstraint[] constraints) 
+        public T? FindEntityByUniqueConstraint<T>(params PropertyConstraint<T>[] constraints) 
             where T : Entity, IEntity
         {
             T? entity = null;
@@ -103,12 +103,12 @@ namespace MarquitoUtils.Main.Class.Service.Sql
             return entity is T;
         }
 
-        public bool MatchUniqueConstraint<T>(T entity, params PropertyConstraint[] constraints) 
+        public bool MatchUniqueConstraint<T>(T entity, params PropertyConstraint<T>[] constraints) 
             where T : Entity, IEntity
         {
             bool matchConstraints = true;
 
-            foreach (PropertyConstraint constraint in constraints)
+            foreach (PropertyConstraint<T> constraint in constraints)
             {
                 object fieldValue;
 

@@ -38,7 +38,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// <typeparam name="T">The entity type</typeparam>
         /// <param name="constraints">Constraints</param>
         /// <returns>Entity found by unique constraint</returns>
-        public T? FindEntityByUniqueConstraint<T>(List<PropertyConstraint> constraints)
+        public T? FindEntityByUniqueConstraint<T>(List<PropertyConstraint<T>> constraints)
             where T : Entity, IEntity;
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// <typeparam name="T">The entity type</typeparam>
         /// <param name="constraints">Constraints</param>
         /// <returns>Entity found by unique constraint</returns>
-        public T? FindEntityByUniqueConstraint<T>(params PropertyConstraint[] constraints)
+        public T? FindEntityByUniqueConstraint<T>(params PropertyConstraint<T>[] constraints)
             where T : Entity, IEntity;
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// <param name="entity">The entity</param>
         /// <param name="constraints">Constraints</param>
         /// <returns>The entity match with constraints ?</returns>
-        public bool MatchUniqueConstraint<T>(T entity, params PropertyConstraint[] constraints)
+        public bool MatchUniqueConstraint<T>(T entity, params PropertyConstraint<T>[] constraints)
             where T : Entity, IEntity;
 
         /// <summary>

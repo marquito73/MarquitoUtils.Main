@@ -9,7 +9,8 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
     /// <summary>
     /// An object represent a required property, needed for retrieve an entity from database
     /// </summary>
-    public class PropertyConstraint
+    public class PropertyConstraint<TEntity>
+        where TEntity : Entity
     {
         /// <summary>
         /// The property's name
@@ -26,7 +27,7 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
         /// <summary>
         /// The class own this property
         /// </summary>
-        public Type OwnerType { get; private set; }
+        public Type OwnerType { get; internal set; } = typeof(TEntity);
         /// <summary>
         /// The property name in parent class own this property
         /// </summary>
@@ -37,15 +38,12 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
         /// </summary>
         /// <param name="propertyName">The property's name</param>
         /// <param name="value">The value of the property</param>
-        /// <param name="entityType">The class own this property</param>
         /// <param name="parentPropertyName">The property name in parent class own this property</param>
         /// <param name="caseSensitive">The property is case sensitive ?</param>
-        public PropertyConstraint(string propertyName, object value, Type entityType, 
-            string parentPropertyName = "", bool caseSensitive = true)
+        public PropertyConstraint(string propertyName, object value, string parentPropertyName = "", bool caseSensitive = true)
         {
             this.PropertyName = propertyName;
             this.Value = value;
-            this.OwnerType = entityType;
             this.ParentPropertyName = parentPropertyName;
             this.CaseSensitive = caseSensitive;
         }
@@ -53,17 +51,14 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
         /// <summary>
         /// An object represent a required property, needed for retrieve an entity from database
         /// </summary>
-        /// <param name="entity">An entity</param>
         /// <param name="propertyName">The property's name</param>
+        /// <param name="entity">An entity</param>
         /// <param name="parentPropertyName">The property name in parent class own this property</param>
         /// <param name="caseSensitive">The property is case sensitive ?</param>
-        public PropertyConstraint(Entity entity, string propertyName, string parentPropertyName = "", bool caseSensitive = true)
+        public PropertyConstraint(string propertyName, TEntity entity, string parentPropertyName = "", bool caseSensitive = true)
+            : this(propertyName, entity.GetFieldValue<object>(propertyName), parentPropertyName, caseSensitive)
         {
-            this.PropertyName = propertyName;
-            this.Value = entity.GetFieldValue<object>(propertyName);
             this.OwnerType = entity.GetType();
-            this.ParentPropertyName = parentPropertyName;
-            this.CaseSensitive = caseSensitive;
         }
     }
 }

@@ -99,16 +99,16 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
         /// </summary>
         /// <param name="getSubEntities">Get property's constraints of sub entities ?</param>
         /// <returns>Property's constraints of this entity</returns>
-        public IEnumerable<PropertyConstraint> GetPropertyConstraints(bool getSubEntities = true)
+        public IEnumerable<PropertyConstraint<Entity>> GetPropertyConstraints(bool getSubEntities = true)
         {
             // Get required fields
-            List<PropertyConstraint> constraints = this.GetType().GetProperties()
+            List<PropertyConstraint<Entity>> constraints = this.GetType().GetProperties()
                 .Where(prop => !prop.Name.Equals(nameof(this.Id)))
                 .Where(prop => prop.HasAttribute<ColumnAttribute>())
                 .Where(prop => prop.HasAttribute<RequiredAttribute>())
                 .Where(prop => !prop.HasAttribute<ForeignKeyAttribute>())
                 .Where(prop => prop.HasAttribute<IndexAttribute>())
-                .Select(prop => new PropertyConstraint(this, prop.Name))
+                .Select(prop => new PropertyConstraint<Entity>(prop.Name, this))
                 .ToList();
             // Get required field of sub entities's required field
             if (getSubEntities)
@@ -134,7 +134,7 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
                     })
                     .Select(prop =>
                     {
-                        List<PropertyConstraint> subPropertyConstraints = new List<PropertyConstraint>();
+                        List<PropertyConstraint<Entity>> subPropertyConstraints = new List<PropertyConstraint<Entity>>();
 
                         ForeignKeyAttribute foreignKey = prop.GetCustomAttribute<ForeignKeyAttribute>();
 
@@ -146,7 +146,7 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
                             .Where(subProp => subProp.HasAttribute<RequiredAttribute>())
                             .Where(subProp => subProp.HasAttribute<IndexAttribute>())
                             .Where(subProp => !subProp.HasAttribute<ForeignKeyAttribute>())
-                            .Select(subProp => new PropertyConstraint(subEntity, subProp.Name, foreignKey.Name));
+                            .Select(subProp => new PropertyConstraint<Entity>(subProp.Name, subEntity, foreignKey.Name));
                     })
                     .SelectMany(prop => prop)
                     .ToList().ForEach(constraints.Add);

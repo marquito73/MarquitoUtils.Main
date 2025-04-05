@@ -99,7 +99,7 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Import
 
                             if (Utils.IsNotNull(subEntity))
                             {
-                                IEnumerable<PropertyConstraint> constraints = subEntity.GetPropertyConstraints(false);
+                                IEnumerable<PropertyConstraint<Entity>> constraints = subEntity.GetPropertyConstraints(false);
 
                                 Entity entityFound = this.ImportService.FindEntityByUniqueConstraint(constraints.ToList(),
                                     subEntity.GetType());
@@ -135,7 +135,7 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Import
         /// <param name="entityToImport">The entity to import</param>
         private void ImportEntity(Entity entityToImport)
         {
-            IEnumerable<PropertyConstraint> constraints = entityToImport.GetPropertyConstraints();
+            IEnumerable<PropertyConstraint<Entity>> constraints = entityToImport.GetPropertyConstraints();
             // The entity found with constraints
             Entity entityFound = this.ImportService.FindEntityByUniqueConstraint(constraints.ToList(), 
                 entityToImport.GetType());

@@ -27,7 +27,7 @@ namespace MarquitoUtils.Main.Class.Service.Import
         /// <param name="constraints">Constraints</param>
         /// <param name="entityType">The entity's type</param>
         /// <returns>Entity found by unique constraint</returns>
-        public Entity FindEntityByUniqueConstraint(List<PropertyConstraint> constraints, Type entityType);
+        public Entity FindEntityByUniqueConstraint(List<PropertyConstraint<Entity>> constraints, Type entityType);
 
         /// <summary>
         /// Persist an entity (find new id and add entity to DbContext)
