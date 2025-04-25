@@ -123,5 +123,29 @@ namespace MarquitoUtils.Main.Class.Tools
         {
             return mapList.ToDictionary(x => x.Key, x => x.Value);
         }
+
+        #region Methods for list
+
+        public static void ForEach<T>(this T[] array, Action<T> action)
+        {
+            array.ToList().ForEach(action);
+        }
+
+        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
+        {
+            enumerable.ToList().ForEach(action);
+        }
+
+        public static void ForEach<T>(this Array array, Action<T> action)
+        {
+            array.Cast<T>().ToList().ForEach(action);
+        }
+
+        public static string Join(this IEnumerable<string> strings, string separator)
+        {
+            return string.Join(separator, strings);
+        }
+
+        #endregion Methods for list
     }
 }

@@ -47,15 +47,17 @@ namespace MarquitoUtils.Main.Class.Tools
             return obj == null;
         }
 
+#pragma warning disable CS8604 // Possible null reference argument.
         /// <summary>
         /// Allows to know if an object is not null
         /// </summary>
         /// <param name="obj">The object</param>
         /// <returns>Boolean indicate if the object is not null</returns>
-        public static bool IsNotNull(object obj)
+        public static bool IsNotNull(object? obj)
         {
             return !IsNull(obj);
         }
+#pragma warning restore CS8604 // Possible null reference argument.
 
         /// <summary>
         /// Allows to know if a string is null or empty
