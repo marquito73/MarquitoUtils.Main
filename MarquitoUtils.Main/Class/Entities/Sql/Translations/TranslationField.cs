@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MarquitoUtils.Main.Class.Attributes.Sql;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static MarquitoUtils.Main.Class.Enums.EnumLang;
 
@@ -15,25 +16,32 @@ namespace MarquitoUtils.Main.Class.Entities.Sql.Translations
         /// <summary>
         /// Id of the translation field
         /// </summary>
-        [Key, Column("translation_field_id", TypeName = "bigint"), Required]
+        [Required]
+        [Key]
+        [GenericColumn<int>("translation_field_id", isKey: true)]
         [Index("pk_translation_field", IsUnique = true)]
         public override int Id { get; set; }
         /// <summary>
         /// Id of entity need this translation field
         /// </summary>
-        [Column("translation_entity_id", TypeName = "bigint"), Required]
+        [Required]
+        [GenericColumn<int>("translation_entity_id", isKey: true)]
         [Index("ix_translation_field", 1, IsUnique = true)]
         public int TranslationEntityId { get; set; }
         /// <summary>
         /// The entity class
         /// </summary>
-        [Column("translation_entity_class", TypeName = "nvarchar"), MaxLength(256), Required]
+        [Required]
+        [MaxLength(256)]
+        [GenericColumn<string>("translation_entity_class")]
         [Index("ix_translation_field", 2, IsUnique = true)]
         public string TranslationEntityClass { get; set; }
         /// <summary>
         /// The entity property
         /// </summary>
-        [Column("translation_entity_property", TypeName = "nvarchar"), MaxLength(128), Required]
+        [Required]
+        [MaxLength(128)]
+        [GenericColumn<string>("translation_entity_property")]
         [Index("ix_translation_field", 3, IsUnique = true)]
         public string TranslationEntityProperty { get; set; }
 

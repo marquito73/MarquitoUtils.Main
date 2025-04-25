@@ -1,4 +1,5 @@
 ﻿using MarquitoUtils.Main.Class.Entities.File;
+using MarquitoUtils.Main.Class.Entities.Sql;
 using MarquitoUtils.Main.Class.Service.Files;
 using MarquitoUtils.Main.Class.Service.General;
 
@@ -25,6 +26,14 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// <summary>
         /// Check if table exist on database
         /// </summary>
+        /// <typeparam name="TEntity">Entity</typeparam>
+        /// <returns>Table exist on database ?</returns>
+        public bool CheckIfTableExist<TEntity>()
+            where TEntity : Entity;
+
+        /// <summary>
+        /// Check if table exist on database
+        /// </summary>
         /// <param name="tableName">The table's name</param>
         /// <returns>Table exist on database ?</returns>
         public bool CheckIfTableExist(string tableName);
@@ -36,5 +45,20 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// <param name="scriptContent">Sql script content</param>
         /// <param name="checkExistence">We need to check if this script has already been executed ?</param>
         public void ExecuteSqlScript(string scriptName, string scriptContent, bool checkExistence = true);
+
+        /// <summary>
+        /// Execute entity sql script
+        /// </summary>
+        /// <typeparam name="TEntity">Entity type</typeparam>
+        /// <param name="checkExistence">We need to check if this script has already been executed ?</param>
+        public void ExecuteEntitySqlScript<TEntity>(bool checkExistence = true)
+            where TEntity : Entity;
+
+        /// <summary>
+        /// Execute entity sql script
+        /// </summary>
+        /// <param name="entityType">Entity type</param>
+        /// <param name="checkExistence">We need to check if this script has already been executed ?</param>
+        public void ExecuteEntitySqlScript(Type entityType, bool checkExistence = true);
     }
 }

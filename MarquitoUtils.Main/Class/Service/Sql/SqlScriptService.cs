@@ -6,6 +6,9 @@ using MarquitoUtils.Main.Class.Entities.Sql;
 using MarquitoUtils.Main.Class.Tools;
 using MarquitoUtils.Main.Class.Entities.Sql.Lists;
 using MarquitoUtils.Main.Class.Entities.File;
+using MarquitoUtils.Main.Class.Tools.Sql;
+using System.Reflection;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MarquitoUtils.Main.Class.Service.Sql
 {
@@ -29,39 +32,11 @@ namespace MarquitoUtils.Main.Class.Service.Sql
             return this.DatabaseConfiguration.GetConnectionString();
         }
 
-        // TODO Voir pour avoir des entités (QueryResult) qu'on construit grâce au DataReader et qu'on renvoie
-        /*public SqlDataReader GetQueryResult(string sqlQueryContent)
+        public bool CheckIfTableExist<TEntity>()
+            where TEntity : Entity
         {
-
-            SqlDataReader reader = null;
-
-            using (SqlConnection connection = new SqlConnection(this.ConnectionString))
-            {
-                connection.Open();
-
-                SqlCommand sqlQuery = connection.CreateCommand();
-
-                // Prepare the query
-                sqlQuery.Connection = connection;
-
-                try
-                {
-                    sqlQuery.CommandText = sqlQueryContent;
-                    // Execute the script content
-                    sqlQuery.ExecuteNonQuery();
-
-                    reader = sqlQuery.ExecuteReader();
-
-                    reader.
-                }
-                catch (Exception ex)
-                {
-                    Logger.Logger.Error("An error occurs with the query");
-                }
-            }
-
-            return reader;
-        }*/
+            return this.CheckIfTableExist(typeof(TEntity).GetCustomAttribute<TableAttribute>().Name);
+        }
 
         public bool CheckIfTableExist(string tableName)
         {
@@ -156,6 +131,23 @@ namespace MarquitoUtils.Main.Class.Service.Sql
                     }
                 }
             }
+        }
+
+        public void ExecuteEntitySqlScript<TEntity>(bool checkExistence = true) where TEntity : Entity
+        {
+            this.ExecuteSqlScript(typeof(TEntity).Name, new EntitySqlScriptHelperTest<TEntity>()
+                .RenderEntitySqlScript(), checkExistence);
+        }
+
+        public void ExecuteEntitySqlScript(Type entityType, bool checkExistence = true)
+        {
+            // Get generics type parameters, and methods type parameters
+            Type[] genericArgs = { entityType };
+            Type[] methodsArgs = { typeof(bool) };
+            // Then get the ExecuteEntitySqlScript method
+            MethodInfo method = this.GetType().GetMethod(nameof(ExecuteEntitySqlScript), methodsArgs).MakeGenericMethod(genericArgs);
+            // Finally, execute it
+            method.Invoke(this, new object[] { checkExistence });
         }
 
         /// <summary>

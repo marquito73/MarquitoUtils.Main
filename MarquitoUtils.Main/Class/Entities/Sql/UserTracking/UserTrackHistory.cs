@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MarquitoUtils.Main.Class.Attributes.Sql;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MarquitoUtils.Main.Class.Entities.Sql.UserTracking
@@ -13,23 +14,29 @@ namespace MarquitoUtils.Main.Class.Entities.Sql.UserTracking
         /// <summary>
         /// Id of the user track history
         /// </summary>
-        [Key, Column("user_track_history_id", TypeName = "bigint"), Required]
-        [Index("PK_user_track_history", IsUnique = true)]
+        [Required]
+        [Key]
+        [GenericColumn<int>("user_track_history_id", isKey: true)]
+        [Index("pk_user_track_history", IsUnique = true)]
         public override int Id { get; set; }
         /// <summary>
         /// User track datetime execution
         /// </summary>
-        [Column("dt_user_track_last_visit_dt", TypeName = "datetime"), Required]
+        [Required]
+        [GenericColumn<DateTime>("dt_user_track_last_visit_dt")]
         public DateTime UserTrackLastVisit { get; set; } = DateTime.Now;
         /// <summary>
         /// Script's datetime execution
         /// </summary>
-        [Column("visit_count", TypeName = "int"), Required]
+        [Required]
+        [GenericColumn<int>("visit_count")]
         public int VisitCount { get; set; }
         /// <summary>
         /// IP adress
         /// </summary>
-        [Column("ip_address", TypeName = "nvarchar"), MaxLength(20), Required]
+        [Required]
+        [MaxLength(20)]
+        [GenericColumn<string>("ip_address")]
         public string IPAddress { get; set; } = "";
     }
 }

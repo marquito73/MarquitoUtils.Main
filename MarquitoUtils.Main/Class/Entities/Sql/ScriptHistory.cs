@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using MarquitoUtils.Main.Class.Attributes.Sql;
 
 namespace MarquitoUtils.Main.Class.Entities.Sql
 {
@@ -14,18 +15,23 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
         /// <summary>
         /// Id of the script history
         /// </summary>
-        [Key, Column("script_history_id", TypeName = "bigint"), Required]
-        [Index("PK_script_history", IsUnique = true)]
+        [Required]
+        [Key]
+        [GenericColumn<int>("script_history_id", isKey: true)]
+        [Index("pk_script_history", IsUnique = true)]
         public override int Id { get; set; }
         /// <summary>
         /// Script's name
         /// </summary>
-        [Column("script_name", TypeName = "nvarchar"), Required]
+        [Required]
+        [MaxLength(250)]
+        [GenericColumn<string>("script_name")]
         public string ScriptName { get; set; }
         /// <summary>
         /// Script's datetime execution
         /// </summary>
-        [Column("dt_script_dt", TypeName = "datetime"), Required]
+        [Required]
+        [GenericColumn<DateTime>("dt_script_dt")]
         public DateTime DtScriptDt { get; set; } = DateTime.Now;
 
         /// <summary>
