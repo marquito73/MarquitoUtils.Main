@@ -23,7 +23,7 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Tools
             where DBContext : DefaultDbContext
         {
             return typeof(DBContext).GetProperties()
-                .Where(prop => Utils.IsGenericDbSetType(prop.PropertyType))
+                .Where(prop => prop.PropertyType.IsGenericDbSetType())
                 .Select(prop => prop.PropertyType.GenericTypeArguments[0])
                 .Where(entityType =>
                 {
@@ -48,13 +48,13 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Tools
                 // Exclude entity code
                 .Where(prop => !prop.Name.Equals(nameof(Entity.EntityIdentityCode)))
                 // Exclude list of entities
-                .Where(prop => !Utils.IsGenericCollectionType(prop.PropertyType)
-                || !Utils.IsAnEntityType(prop.PropertyType.GenericTypeArguments[0]))
+                .Where(prop => !prop.PropertyType.IsGenericCollectionType()
+                || !prop.PropertyType.GenericTypeArguments[0].IsAnEntityType())
                 .Where(prop => !prop.HasAttribute<ForeignKeyAttribute>());
             // First get all fields without entity
             List<PropertyInfo> entityProperties = new List<PropertyInfo>();
             // First, get required field for retrieve a sub entity
-            properties.Where(prop => Utils.IsAnEntityType(prop.PropertyType))
+            properties.Where(prop => prop.PropertyType.IsAnEntityType())
                 .ToList().ForEach(prop =>
                 {
                     IEnumerable<IGrouping<string, PropertyInfo>> subProperties =
@@ -77,7 +77,7 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Tools
                 });
             // And next, get all fields without entity
             entityProperties.AddRange(properties
-                .Where(prop => !Utils.IsAnEntityType(prop.PropertyType)));
+                .Where(prop => !prop.PropertyType.IsAnEntityType()));
 
             return entityProperties.OrderBy(prop => IsDependencyColumn(prop) ? 0 : 1).ToHashSet();
         }
@@ -110,10 +110,10 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Tools
                 // Exclude entity code
                 .Where(prop => !prop.Name.Equals(nameof(Entity.EntityIdentityCode)))
                 // Exclude list of entities
-                .Where(prop => !Utils.IsGenericCollectionType(prop.PropertyType)
-                || !Utils.IsAnEntityType(prop.PropertyType.GenericTypeArguments[0]))
+                .Where(prop => !prop.PropertyType.IsGenericCollectionType()
+                || !prop.PropertyType.GenericTypeArguments[0].IsAnEntityType())
                 .Where(prop => !prop.HasAttribute<ForeignKeyAttribute>())
-                .Where(prop => Utils.IsAnEntityType(prop.PropertyType))
+                .Where(prop => prop.PropertyType.IsAnEntityType())
                 .Where(prop =>
                 {
                     bool dependentColumnIsValid = true;

@@ -1,10 +1,6 @@
 ﻿using MarquitoUtils.Main.Class.Entities.Image;
 using MarquitoUtils.Main.Class.Entities.Param;
-using MarquitoUtils.Main.Class.Entities.Sql;
-using MarquitoUtils.Main.Class.Sql;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System.Data.Entity;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -587,41 +583,6 @@ namespace MarquitoUtils.Main.Class.Tools
         {
             //return TypeIsInheritedBy<T1, T2>();
             return typeChild.IsSubclassOf(typeParent) || typeChild.IsEquivalentTo(typeParent);
-        }
-
-        /// <summary>
-        /// Return true if type is a generic list
-        /// </summary>
-        /// <param name="type">The type to check</param>
-        /// <returns>True if type is a generic list</returns>
-        public static bool IsGenericCollectionType(Type type)
-        {
-            return type.IsGenericType && (
-                type.GetGenericTypeDefinition() == typeof(List<>) ||
-                type.GetGenericTypeDefinition() == typeof(ICollection<>));
-        }
-
-        /// <summary>
-        /// Return true if type is a generic set
-        /// </summary>
-        /// <param name="type">The type to check</param>
-        /// <returns>True if type is a generic set</returns>
-        public static bool IsGenericSetType(Type type)
-        {
-            return type.IsGenericType && (
-                type.GetGenericTypeDefinition() == typeof(Microsoft.EntityFrameworkCore.DbSet<>) ||
-                type.GetGenericTypeDefinition() == typeof(IQueryable<>));
-        }
-
-        public static bool IsGenericDbSetType(Type type)
-        {
-            return IsGenericSetType(type) 
-                && IsAnEntityType(type.GenericTypeArguments[0]);
-        }
-
-        public static bool IsAnEntityType(Type type)
-        {
-            return type.IsSubclassOf(typeof(Entity));
         }
 
         /// <summary>

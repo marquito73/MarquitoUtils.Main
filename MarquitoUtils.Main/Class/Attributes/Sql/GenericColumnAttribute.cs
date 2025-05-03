@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using MarquitoUtils.Main.Class.Entities.Image;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MarquitoUtils.Main.Class.Attributes.Sql
 {
@@ -40,6 +41,9 @@ namespace MarquitoUtils.Main.Class.Attributes.Sql
                         break;
                     case nameof(DateTime):
                         this.TypeName = typeof(T).Name.ToLower();
+                        break;
+                    case nameof(ImageData):
+                        this.TypeName = "varbinary";
                         break;
                     default:
                         this.TypeName = typeof(T).Name.ToLower();

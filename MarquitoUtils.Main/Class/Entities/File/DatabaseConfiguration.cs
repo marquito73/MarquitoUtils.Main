@@ -77,7 +77,8 @@ namespace MarquitoUtils.Main.Class.Entities.File
                     .Append($" User Id={this.User};")
                     .Append($" Password={this.Password};")
                     .Append(" Trusted_Connection=True;")
-                    .Append(" Encrypt=False;");
+                    .Append(" Encrypt=False;")
+                    .Append(" MultipleActiveResultSets=True;");
             }
 
             return sbConnectionString.ToString();

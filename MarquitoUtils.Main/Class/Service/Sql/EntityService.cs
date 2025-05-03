@@ -4,7 +4,6 @@ using MarquitoUtils.Main.Class.Sql;
 using MarquitoUtils.Main.Class.Tools;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using NPOI.SS.Formula.Functions;
 
 namespace MarquitoUtils.Main.Class.Service.Sql
 {
@@ -24,7 +23,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
 
             // Get list properties, and includes data
             typeof(T).GetProperties()
-                .Where(prop => Utils.IsGenericCollectionType(prop.PropertyType)).ToList()
+                .Where(prop => prop.PropertyType.IsGenericCollectionType()).ToList()
                 .ForEach(prop =>
                 {
                     includes.Add(prop.Name);
@@ -179,6 +178,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
 
         public List<T> GetEntityList<T>(List<Func<T, bool>> filters, ISet<string> includes) where T : Entity, IEntity
         {
+            // Essai 1
             List<T> entityList = new List<T>();
 
             if (Utils.IsNotEmpty(this.DbContext.ChangeTracker.Entries()))
@@ -190,13 +190,10 @@ namespace MarquitoUtils.Main.Class.Service.Sql
                     .ToList());
             }
 
-            if (Utils.IsNotEmpty(this.DbContext.Set<T>().ToList()))
-            {
-                this.ApplyIncludes(this.DbContext.Set<T>(), includes)
-                    .Where(this.ApplyFilters(filters))
-                    .Where(entity => !entityList.Select(e => e.EntityIdentityCode).Contains(entity.EntityIdentityCode))
-                    .ToList().ForEach(entityList.Add);
-            }
+            this.ApplyIncludes(this.DbContext.Set<T>(), includes)
+                .Where(this.ApplyFilters(filters))
+                .Where(entity => !entityList.Select(e => e.EntityIdentityCode).Contains(entity.EntityIdentityCode))
+                .ForEach(entityList.Add);
 
             return entityList.Distinct().ToList();
         }

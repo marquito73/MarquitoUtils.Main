@@ -109,6 +109,42 @@ namespace MarquitoUtils.Main.Class.Tools
             return type.IsSubclassOf(typeof(Entity));
         }
 
+        /// <summary>
+        /// Return true if type is a generic list
+        /// </summary>
+        /// <param name="type">The type to check</param>
+        /// <returns>True if type is a generic list</returns>
+        public static bool IsGenericCollectionType(this Type type)
+        {
+            return type.IsGenericType && (
+                type.GetGenericTypeDefinition() == typeof(List<>) ||
+                type.GetGenericTypeDefinition() == typeof(ICollection<>));
+        }
+
+        /// <summary>
+        /// Return true if type is a generic set
+        /// </summary>
+        /// <param name="type">The type to check</param>
+        /// <returns>True if type is a generic set</returns>
+        public static bool IsGenericSetType(this Type type)
+        {
+            return type.IsGenericType && (
+                type.GetGenericTypeDefinition() == typeof(Microsoft.EntityFrameworkCore.DbSet<>) ||
+                type.GetGenericTypeDefinition() == typeof(IQueryable<>));
+        }
+
+        public static bool IsGenericDbSetType(this Type type)
+        {
+            return IsGenericSetType(type)
+                && IsAnEntityType(type.GenericTypeArguments[0]);
+        }
+
+        public static bool IsGenericDbCollectionType(this Type type)
+        {
+            return IsGenericCollectionType(type)
+                && IsAnEntityType(type.GenericTypeArguments[0]);
+        }
+
         public static bool AssemblyHasType<T>(this Assembly assembly)
         {
             return assembly.GetTypes().Any(type => type.Equals(typeof(T)));

@@ -2,6 +2,7 @@
 using MarquitoUtils.Main.Class.Entities.Sql.Translations;
 using MarquitoUtils.Main.Class.Service.Sql;
 using MarquitoUtils.Main.Class.Tools;
+using System.Reflection;
 namespace MarquitoUtils.Main.Class.Sql
 {
     /// <summary>
@@ -13,7 +14,7 @@ namespace MarquitoUtils.Main.Class.Sql
         /// <summary>
         /// The database context
         /// </summary>
-        protected DefaultDbContext DbContext { get; set; }
+        public DefaultDbContext DbContext { get; set; }
         /// <summary>
         /// Filters
         /// </summary>
@@ -26,19 +27,9 @@ namespace MarquitoUtils.Main.Class.Sql
         /// <summary>
         /// Entity list, can be inherited by entity list with specific entity type
         /// </summary>
-        /// <param name="dbContext">The database context</param>
-        public EntityList(DefaultDbContext dbContext)
+        public EntityList()
         {
-            this.DbContext = dbContext;
-
             // Get list properties, and includes data
-            typeof(T).GetProperties()
-                .Where(prop => Utils.IsGenericCollectionType(prop.PropertyType)).ToList()
-                .ForEach(prop =>
-                {
-                    this.Includes.Add(prop.Name);
-                });
-
             typeof(T).GetProperties()
                 .Where(prop => prop.PropertyType.IsAnEntityType()).ToList()
                 .ForEach(prop =>
@@ -47,12 +38,46 @@ namespace MarquitoUtils.Main.Class.Sql
                     {
                         this.Includes.Add(prop.Name);
                         this.Includes.Add($"{prop.Name}.{nameof(TranslationField.Translations)}");
-                    } 
+                    }
+                });
+        }
+
+        /// <summary>
+        /// Entity list, can be inherited by entity list with specific entity type
+        /// </summary>
+        /// <param name="dbContext">The database context</param>
+        public EntityList(DefaultDbContext dbContext) : this()
+        {
+            this.DbContext = dbContext;
+        }
+
+        private IEnumerable<PropertyInfo> GetSubEntityProps(Type type)
+        {
+            return type.GetProperties()
+                .Where(prop => prop.PropertyType.IsAnEntityType() || prop.PropertyType.IsGenericDbCollectionType());
+        }
+
+        private void GetIncludes(Type type)
+        {
+            this.GetSubEntityProps(type).ForEach(prop =>
+            {
+                if (prop.PropertyType.IsAnEntityType())
+                {
+                    if (prop.PropertyType.IsEquivalentTo(typeof(TranslationField)))
+                    {
+                        this.Includes.Add(prop.Name);
+                        this.Includes.Add($"{prop.Name}.{nameof(TranslationField.Translations)}");
+                    }
                     else
                     {
                         this.Includes.Add(prop.Name);
                     }
-                });
+                }
+                else if (prop.PropertyType.IsGenericDbCollectionType())
+                {
+                    this.Includes.Add(prop.Name);
+                }
+            });
         }
 
         /// <summary>

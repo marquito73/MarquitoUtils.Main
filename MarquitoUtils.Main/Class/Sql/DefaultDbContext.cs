@@ -4,6 +4,7 @@ using MarquitoUtils.Main.Class.Entities.Sql.Translations;
 using MarquitoUtils.Main.Class.Entities.Sql.UserTracking;
 using MarquitoUtils.Main.Class.Tools;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace MarquitoUtils.Main.Class.Sql
 {
@@ -32,11 +33,29 @@ namespace MarquitoUtils.Main.Class.Sql
         protected DefaultDbContext(DbContextOptionsBuilder contextBuilder, DatabaseConfiguration dbConfig) 
             : base(contextBuilder.Options)
         {
-            this.SqlConnectionString = dbConfig.GetConnectionString();
+        }
 
-            contextBuilder
-                .UseLazyLoadingProxies(true)
-                .UseSqlServer(this.SqlConnectionString);
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
+
+        private IEnumerable<PropertyInfo> GetSubEntityProps(Type type)
+        {
+            return type.GetProperties()
+                .Where(prop => prop.PropertyType.IsAnEntityType() || prop.PropertyType.IsGenericDbCollectionType());
+        }
+
+        protected void MapNavigation<TEntity>(ModelBuilder modelBuilder, params string[] excludedProperties)
+            where TEntity : Entity
+        {
+            this.GetSubEntityProps(typeof(TEntity)).ForEach(prop =>
+            {
+                if (!Utils.Nvl(excludedProperties).Contains(prop.Name))
+                {
+                    modelBuilder.Entity<TEntity>().Navigation(prop.Name).AutoInclude();
+                }
+            });
         }
 
         /// <summary>
@@ -49,7 +68,9 @@ namespace MarquitoUtils.Main.Class.Sql
             where DB : DefaultDbContext
         {
             DbContextOptionsBuilder contextBuilder = new DbContextOptionsBuilder<DB>();
-            contextBuilder.UseSqlServer(dbConfig.GetConnectionString());
+            contextBuilder
+                //.UseLazyLoadingProxies()
+                .UseSqlServer(dbConfig.GetConnectionString());
 
             return (DB)Activator.CreateInstance(typeof(DB), contextBuilder, dbConfig);
         }

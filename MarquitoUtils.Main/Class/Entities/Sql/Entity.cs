@@ -20,7 +20,7 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
 
         public Entity()
         {
-            this.EntityIdentityCode = Utils.GetIdentityCode(this);
+            this.EntityIdentityCode = Guid.NewGuid();
         }
 
         public PropertyInfo GetPropertyInfo(string fieldName)
