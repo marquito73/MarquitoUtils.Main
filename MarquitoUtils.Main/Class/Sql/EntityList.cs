@@ -12,9 +12,9 @@ namespace MarquitoUtils.Main.Class.Sql
     public abstract class EntityList<T> where T : Entity, IEntity
     {
         /// <summary>
-        /// The database context
+        /// The entity service
         /// </summary>
-        public DefaultDbContext DbContext { get; set; }
+        public IEntityService EntityService { get; set; }
         /// <summary>
         /// Filters
         /// </summary>
@@ -23,12 +23,17 @@ namespace MarquitoUtils.Main.Class.Sql
         /// Includes
         /// </summary>
         protected ISet<string> Includes { get; private set; } = new HashSet<string>();
+        /// <summary>
+        /// Ignore cache for get entities ?
+        /// </summary>
+        private bool IgnoreCache { get; set; }
 
         /// <summary>
         /// Entity list, can be inherited by entity list with specific entity type
         /// </summary>
-        public EntityList()
+        public EntityList(bool ignoreCache = false)
         {
+            this.IgnoreCache = ignoreCache;
             // Get list properties, and includes data
             typeof(T).GetProperties()
                 .Where(prop => prop.PropertyType.IsAnEntityType()).ToList()
@@ -45,10 +50,10 @@ namespace MarquitoUtils.Main.Class.Sql
         /// <summary>
         /// Entity list, can be inherited by entity list with specific entity type
         /// </summary>
-        /// <param name="dbContext">The database context</param>
-        public EntityList(DefaultDbContext dbContext) : this()
+        /// <param name="entityService">The database context</param>
+        public EntityList(IEntityService entityService, bool ignoreCache = false) : this(ignoreCache)
         {
-            this.DbContext = dbContext;
+            this.EntityService = entityService;
         }
 
         private IEnumerable<PropertyInfo> GetSubEntityProps(Type type)
@@ -86,7 +91,7 @@ namespace MarquitoUtils.Main.Class.Sql
         /// <returns>Entities</returns>
         public IEnumerable<T> GetEntityList()
         {
-            return this.GetEntityService().GetEntityList(this.Filters, this.Includes);
+            return this.EntityService.GetEntityList(this.Filters, this.Includes, this.IgnoreCache);
         }
 
         /// <summary>
@@ -319,27 +324,6 @@ namespace MarquitoUtils.Main.Class.Sql
             }
 
             return result;
-        }
-
-        /// <summary>
-        /// Return the entity service
-        /// </summary>
-        /// <returns>Entity service</returns>
-        /// <exception cref="Exception">Exception if the DbContext of the entitylist is null</exception>
-        private IEntityService GetEntityService()
-        {
-            IEntityService entityService = new EntityService();
-
-            if (Utils.IsNotNull(this.DbContext))
-            {
-                entityService.DbContext = this.DbContext;
-            }
-            else
-            {
-                throw new Exception("Can't get entity service without DbContext specified to the WebClass");
-            }
-
-            return entityService;
         }
 
         /// <summary>

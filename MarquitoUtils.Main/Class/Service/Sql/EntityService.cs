@@ -1,4 +1,5 @@
-﻿using MarquitoUtils.Main.Class.Entities.Sql;
+﻿using MarquitoUtils.Main.Class.Cache;
+using MarquitoUtils.Main.Class.Entities.Sql;
 using MarquitoUtils.Main.Class.Entities.Sql.Translations;
 using MarquitoUtils.Main.Class.Sql;
 using MarquitoUtils.Main.Class.Tools;
@@ -12,23 +13,14 @@ namespace MarquitoUtils.Main.Class.Service.Sql
     /// </summary>
     public class EntityService : IEntityService
     {
-        /// <summary>
-        /// Db context of the Entity service
-        /// </summary>
         public DefaultDbContext DbContext { get; set; }
+        public EntityCache EntityCache { get; set; }
 
         private ISet<string> GetIncludes<T>()
         {
             ISet<string> includes = new HashSet<string>();
 
             // Get list properties, and includes data
-            typeof(T).GetProperties()
-                .Where(prop => prop.PropertyType.IsGenericCollectionType()).ToList()
-                .ForEach(prop =>
-                {
-                    includes.Add(prop.Name);
-                });
-
             typeof(T).GetProperties()
                 .Where(prop => prop.PropertyType.IsAnEntityType()).ToList()
                 .ForEach(prop =>
@@ -38,28 +30,24 @@ namespace MarquitoUtils.Main.Class.Service.Sql
                         includes.Add(prop.Name);
                         includes.Add($"{prop.Name}.{nameof(TranslationField.Translations)}");
                     }
-                    else
-                    {
-                        includes.Add(prop.Name);
-                    }
                 });
 
             return includes;
         }
 
-        public T? FindEntityById<T>(int id) 
+        public T? FindEntityById<T>(int id, bool ignoreCache = false) 
             where T : Entity, IEntity
         {
-            return this.GetEntityList<T>(new List<Func<T, bool>>(), this.GetIncludes<T>())
+            return this.GetEntityList<T>(new List<Func<T, bool>>(), this.GetIncludes<T>(), ignoreCache)
                 .SingleOrDefault(entity => entity.Id == id);
         }
 
-        public List<T> FindEntitiesByIds<T>(List<int> ids)
+        public List<T> FindEntitiesByIds<T>(List<int> ids, bool ignoreCache = false)
             where T : Entity, IEntity
         {
             List<T> entitiesFound = default(List<T>);
 
-            List<T> entities = this.GetEntityList<T>();
+            List<T> entities = this.GetEntityList<T>(ignoreCache);
 
             if (Utils.IsNotEmpty(entities))
             {
@@ -69,18 +57,18 @@ namespace MarquitoUtils.Main.Class.Service.Sql
             return entitiesFound;
         }
 
-        public T? FindEntityByUniqueConstraint<T>(List<PropertyConstraint<T>> constraints) 
+        public T? FindEntityByUniqueConstraint<T>(List<PropertyConstraint<T>> constraints, bool ignoreCache = false) 
             where T : Entity, IEntity
         {
-            return this.FindEntityByUniqueConstraint<T>(constraints.ToArray());
+            return this.FindEntityByUniqueConstraint<T>(ignoreCache, constraints.ToArray());
         }
 
-        public T? FindEntityByUniqueConstraint<T>(params PropertyConstraint<T>[] constraints) 
+        public T? FindEntityByUniqueConstraint<T>(bool ignoreCache = false, params PropertyConstraint<T>[] constraints) 
             where T : Entity, IEntity
         {
             T? entity = null;
 
-            List<T> entities = this.GetEntityList<T>();
+            List<T> entities = this.GetEntityList<T>(ignoreCache);
 
             if (Utils.IsNotEmpty(entities))
             {
@@ -157,7 +145,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
             {
                 int newId = 1;
 
-                List<T> entities = this.GetEntityList<T>();
+                List<T> entities = this.GetEntityList<T>(true);
 
                 if (Utils.IsNotEmpty(entities))
                 {
@@ -171,29 +159,36 @@ namespace MarquitoUtils.Main.Class.Service.Sql
             }
         }
 
-        public List<T> GetEntityList<T>() where T : Entity, IEntity
+        public List<T> GetEntityList<T>(bool ignoreCache = false) where T : Entity, IEntity
         {
-            return this.GetEntityList<T>(new List<Func<T, bool>>(), this.GetIncludes<T>());
+            return this.GetEntityList<T>(new List<Func<T, bool>>(), this.GetIncludes<T>(), ignoreCache);
         }
 
-        public List<T> GetEntityList<T>(List<Func<T, bool>> filters, ISet<string> includes) where T : Entity, IEntity
+        public List<T> GetEntityList<T>(List<Func<T, bool>> filters, ISet<string> includes, bool ignoreCache = false) where T : Entity, IEntity
         {
-            // Essai 1
             List<T> entityList = new List<T>();
-
-            if (Utils.IsNotEmpty(this.DbContext.ChangeTracker.Entries()))
+            
+            if (!this.DbContext.UseCache || ignoreCache)
             {
-                entityList.AddRange(this.DbContext.ChangeTracker.Entries()
-                    .Where(entry => this.MatchEntityType<T>(entry.Entity))
-                    .Select(entry => (T)entry.Entity)
-                    .Where(this.ApplyFilters(filters))
-                    .ToList());
-            }
 
-            this.ApplyIncludes(this.DbContext.Set<T>(), includes)
-                .Where(this.ApplyFilters(filters))
-                .Where(entity => !entityList.Select(e => e.EntityIdentityCode).Contains(entity.EntityIdentityCode))
-                .ForEach(entityList.Add);
+                if (Utils.IsNotEmpty(this.DbContext.ChangeTracker.Entries()))
+                {
+                    entityList.AddRange(this.DbContext.ChangeTracker.Entries()
+                        .Where(entry => this.MatchEntityType<T>(entry.Entity))
+                        .Select(entry => (T)entry.Entity)
+                        .Where(this.ApplyFilters(filters))
+                        .ToList());
+                }
+
+                this.ApplyIncludes(this.DbContext.Set<T>(), includes)
+                    .Where(this.ApplyFilters(filters))
+                    .Where(entity => !entityList.Select(e => e.EntityIdentityCode).Contains(entity.EntityIdentityCode))
+                    .ForEach(entityList.Add);
+            }
+            else
+            {
+                entityList.AddRange(this.EntityCache.CacheMap[typeof(T)].Cast<T>());
+            }
 
             return entityList.Distinct().ToList();
         }

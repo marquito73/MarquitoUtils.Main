@@ -18,6 +18,10 @@ namespace MarquitoUtils.Main.Class.Sql
         /// </summary>
         private string SqlConnectionString { get; set; }
         /// <summary>
+        /// Use cache for get data ?
+        /// </summary>
+        public bool UseCache { get; set; } = false;
+        /// <summary>
         /// Database set of script histories
         /// </summary>
         public DbSet<ScriptHistory> ScriptHistory { get; set; }

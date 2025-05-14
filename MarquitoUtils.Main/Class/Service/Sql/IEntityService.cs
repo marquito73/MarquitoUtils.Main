@@ -1,4 +1,5 @@
-﻿using MarquitoUtils.Main.Class.Entities.Sql;
+﻿using MarquitoUtils.Main.Class.Cache;
+using MarquitoUtils.Main.Class.Entities.Sql;
 using MarquitoUtils.Main.Class.Service.General;
 using MarquitoUtils.Main.Class.Sql;
 
@@ -13,6 +14,10 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// The database context, contains DbSets
         /// </summary>
         public DefaultDbContext DbContext { get; set; }
+        /// <summary>
+        /// Entities stored in cache
+        /// </summary>
+        public EntityCache EntityCache { get; set; }
 
         /// <summary>
         /// Find an entity by his id
@@ -20,7 +25,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// <typeparam name="T">The entity type</typeparam>
         /// <param name="id">The id</param>
         /// <returns>An entity found by his id</returns>
-        public T? FindEntityById<T>(int id) 
+        public T? FindEntityById<T>(int id, bool ignoreCache = false) 
             where T : Entity, IEntity;
 
         /// <summary>
@@ -29,7 +34,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// <typeparam name="T">The entity type</typeparam>
         /// <param name="ids">Ids</param>
         /// <returns>Entities found by ids</returns>
-        public List<T> FindEntitiesByIds<T>(List<int> ids)
+        public List<T> FindEntitiesByIds<T>(List<int> ids, bool ignoreCache = false)
             where T : Entity, IEntity;
 
         /// <summary>
@@ -38,7 +43,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// <typeparam name="T">The entity type</typeparam>
         /// <param name="constraints">Constraints</param>
         /// <returns>Entity found by unique constraint</returns>
-        public T? FindEntityByUniqueConstraint<T>(List<PropertyConstraint<T>> constraints)
+        public T? FindEntityByUniqueConstraint<T>(List<PropertyConstraint<T>> constraints, bool ignoreCache = false)
             where T : Entity, IEntity;
 
         /// <summary>
@@ -47,7 +52,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// <typeparam name="T">The entity type</typeparam>
         /// <param name="constraints">Constraints</param>
         /// <returns>Entity found by unique constraint</returns>
-        public T? FindEntityByUniqueConstraint<T>(params PropertyConstraint<T>[] constraints)
+        public T? FindEntityByUniqueConstraint<T>(bool ignoreCache = false, params PropertyConstraint<T>[] constraints)
             where T : Entity, IEntity;
 
         /// <summary>
@@ -73,7 +78,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// </summary>
         /// <typeparam name="T">The entity type</typeparam>
         /// <returns>Entities of specific entity type</returns>
-        public List<T> GetEntityList<T>() 
+        public List<T> GetEntityList<T>(bool ignoreCache = false) 
             where T : Entity, IEntity;
 
         /// <summary>
@@ -83,7 +88,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
         /// <param name="filters">Filters</param>
         /// <param name="includes">Includes</param>
         /// <returns>Entities of specific entity type</returns>
-        public List<T> GetEntityList<T>(List<Func<T, bool>> filters, ISet<string> includes) 
+        public List<T> GetEntityList<T>(List<Func<T, bool>> filters, ISet<string> includes, bool ignoreCache = false) 
             where T : Entity, IEntity;
         /// <summary>
         /// Flush data to the database, if any error happen, transaction will be rollback

@@ -37,7 +37,7 @@ namespace MarquitoUtils.Main.Class.Service.Import
             // Build a method with the specific type argument you're interested in
             method = method.MakeGenericMethod(entityType);
 
-            return (method.Invoke(this, new object[] { constraints }) as Entity);
+            return (method.Invoke(this, new object[] { constraints, true }) as Entity);
         }
 
         public void PersistEntity(Entity entity)

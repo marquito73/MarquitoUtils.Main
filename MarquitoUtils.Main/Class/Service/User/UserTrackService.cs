@@ -13,7 +13,7 @@ namespace MarquitoUtils.Main.Class.Service.User
 
         public UserTrackHistory GetUserTrack(string IPAdress)
         {
-            ListUserTrackHistory list = new ListUserTrackHistory(this.EntityService.DbContext);
+            ListUserTrackHistory list = new ListUserTrackHistory(this.EntityService);
 
             list.SetUserIPAddress(IPAdress);
 

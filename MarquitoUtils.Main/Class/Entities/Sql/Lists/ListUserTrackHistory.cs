@@ -1,4 +1,5 @@
 ﻿using MarquitoUtils.Main.Class.Entities.Sql.UserTracking;
+using MarquitoUtils.Main.Class.Service.Sql;
 using MarquitoUtils.Main.Class.Sql;
 using System;
 using System.Collections.Generic;
@@ -16,8 +17,8 @@ namespace MarquitoUtils.Main.Class.Entities.Sql.Lists
         /// <summary>
         /// List of user track
         /// </summary>
-        /// <param name="dbContext">The database context</param>
-        public ListUserTrackHistory(DefaultDbContext dbContext) : base(dbContext)
+        /// <param name="entityService">The entity service</param>
+        public ListUserTrackHistory(IEntityService entityService) : base(entityService, true)
         {
         }
 

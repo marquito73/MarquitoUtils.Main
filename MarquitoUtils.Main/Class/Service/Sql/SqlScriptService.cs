@@ -80,7 +80,7 @@ namespace MarquitoUtils.Main.Class.Service.Sql
 
             if (checkExistence)
             {
-                ListScriptHistory scriptHistories = new ListScriptHistory(this.EntityService.DbContext);
+                ListScriptHistory scriptHistories = new ListScriptHistory(this.EntityService);
 
                 scriptAlreadyExecuted = scriptHistories.GetEntityList().Any(script => script.ScriptName.Equals(scriptName));
             }
