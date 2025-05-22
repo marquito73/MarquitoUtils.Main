@@ -59,5 +59,9 @@ namespace MarquitoUtils.Main.Class.Attributes.Sql
         public GenericColumnAttribute(string name) : this(name, false)
         {
         }
+        public GenericColumnAttribute(string name, string typeName) : base(name)
+        {
+            this.TypeName = typeName;
+        }
     }
 }
