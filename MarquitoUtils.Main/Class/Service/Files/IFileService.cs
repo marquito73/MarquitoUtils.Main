@@ -42,20 +42,20 @@ namespace MarquitoUtils.Main.Class.Service.Files
         /// <typeparam name="T">The type of the object returned</typeparam>
         /// <param name="filename">The XML filename</param>
         /// <returns>Typed object from an XML file</returns>
-        public T GetDataFromXMLFile<T>(string filename) where T : class, new();
+        public T GetDataFromXMLFile<T>(string filename, Assembly? assembly = null) where T : class, new();
 
         /// <summary>
         /// Get the database configuration file of the project launch the application
         /// </summary>
         /// <returns>The database configuration file of the project launch the application</returns>
-        public DatabaseConfiguration GetDefaultDatabaseConfiguration();
+        public DatabaseConfiguration GetDefaultDatabaseConfiguration(Assembly? assembly = null);
 
         /// <summary>
         /// Get the database configuration file of the project launch the application
         /// </summary>
         /// <param name="databaseConfigurationFileName">The database configuration file name</param>
         /// <returns>The database configuration file of the project launch the application</returns>
-        public DatabaseConfiguration GetDatabaseConfiguration(string databaseConfigurationFileName);
+        public DatabaseConfiguration GetDatabaseConfiguration(string databaseConfigurationFileName, Assembly? assembly = null);
 
         /// <summary>
         /// Set creation and update date of a file

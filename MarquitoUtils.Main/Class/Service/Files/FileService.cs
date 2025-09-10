@@ -1,8 +1,6 @@
 ﻿using MarquitoUtils.Main.Class.Entities.File;
 using MarquitoUtils.Main.Class.Service.General;
 using MarquitoUtils.Main.Class.Tools;
-using Microsoft.SqlServer.Management.HadrData;
-using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Xml;
@@ -68,12 +66,12 @@ namespace MarquitoUtils.Main.Class.Service.Files
             return file;
         }
 
-        public T GetDataFromXMLFile<T>(string filename)
+        public T GetDataFromXMLFile<T>(string filename, Assembly? assembly = null)
             where T : class, new()
         {
             T data;
 
-            using (Stream fileStream = this.GetFileStreamFromManifest(filename))
+            using (Stream fileStream = this.GetFileStreamFromManifest(filename, assembly))
             {
                 XmlDocument xmlDocument = new XmlDocument();
                 xmlDocument.Load(fileStream);
@@ -81,7 +79,7 @@ namespace MarquitoUtils.Main.Class.Service.Files
                 XmlSerializer serializer = new XmlSerializer(typeof(T));
                 using (XmlReader reader = new XmlNodeReader(xmlDocument))
                 {
-                    data = (T) serializer.Deserialize(reader);
+                    data = (T)serializer.Deserialize(reader);
                 }
             }
 
@@ -89,16 +87,16 @@ namespace MarquitoUtils.Main.Class.Service.Files
             return data;
         }
 
-        public DatabaseConfiguration GetDefaultDatabaseConfiguration()
+        public DatabaseConfiguration GetDefaultDatabaseConfiguration(Assembly? assembly = null)
         {
-            return this.GetDatabaseConfiguration(@"Files\Configuration\Database.config");
+            return this.GetDatabaseConfiguration(@"Files\Configuration\Database.config", assembly);
         }
 
-        public DatabaseConfiguration GetDatabaseConfiguration(string databaseConfigurationFileName)
+        public DatabaseConfiguration GetDatabaseConfiguration(string databaseConfigurationFileName, Assembly? assembly = null)
         {
             DatabaseConfiguration databaseConfiguration;
 
-            using (Stream configStream = this.GetFileStreamFromManifest(databaseConfigurationFileName))
+            using (Stream configStream = this.GetFileStreamFromManifest(databaseConfigurationFileName, assembly))
             {
                 XDocument configFile = XDocument.Load(configStream);
 
