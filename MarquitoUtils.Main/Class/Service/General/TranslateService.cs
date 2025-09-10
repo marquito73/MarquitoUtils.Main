@@ -1,6 +1,4 @@
 ﻿using MarquitoUtils.Main.Class.Entities.Translation;
-using MarquitoUtils.Main.Class.Enums;
-using MarquitoUtils.Main.Class.Logger;
 using MarquitoUtils.Main.Class.Service.Files;
 using MarquitoUtils.Main.Class.Tools;
 using System.Globalization;
@@ -256,7 +254,7 @@ namespace MarquitoUtils.Main.Class.Service.General
                 IEnumerable<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies()
                     .Where(assemblyBis => !assemblyBis.GetName().Name.ToLower().StartsWith("system."))
                     .Where(assemblyBis => !assemblyBis.GetName().Name.ToLower().StartsWith("microsoft."));
-                
+
 
                 resultType = assemblies.Where(assemblyBis => assemblyBis.AssemblyHasType(sbFullCs.ToString()))
                     .Select(assemblyBis => assemblyBis.GetType(sbFullCs.ToString()))

@@ -1,12 +1,7 @@
 ﻿using MarquitoUtils.Main.Class.Entities.Translation;
 using MarquitoUtils.Main.Class.Service.Files;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using static MarquitoUtils.Main.Class.Enums.EnumLang;
 
 namespace MarquitoUtils.Main.Class.Service.General
@@ -37,7 +32,7 @@ namespace MarquitoUtils.Main.Class.Service.General
         /// <param name="translationKey">The translation key for translate</param>
         /// <param name="language">The language for translate</param>
         /// <returns>The translation</returns>
-        public string GetTranslation<T>(string translationKey, 
+        public string GetTranslation<T>(string translationKey,
             LanguageType language);
 
         /// <summary>

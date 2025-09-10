@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Translations application="Project.Name">
+	<Language lang="EN">
+		<Class cls="Project.Name.Namespace">
+			<Translation tag="LBL_example">Example</Translation>
+		</Class>
+	</Language>
+</Translations>
