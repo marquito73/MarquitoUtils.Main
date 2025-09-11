@@ -5,7 +5,7 @@ namespace MarquitoUtils.Main.Class.Tools
     /// <summary>
     /// A currency tool
     /// </summary>
-    public class CurrencyTool
+    public class CurrencyUtils
     {
         /// <summary>
         /// Get currency symbol from ISO currency symbol name
@@ -17,7 +17,8 @@ namespace MarquitoUtils.Main.Class.Tools
             string symbol = CultureInfo
                 .GetCultures(CultureTypes.AllCultures)
                 .Where(c => !c.IsNeutralCulture)
-                .Select(culture => {
+                .Select(culture =>
+                {
                     try
                     {
                         return new RegionInfo(culture.Name);
@@ -31,6 +32,12 @@ namespace MarquitoUtils.Main.Class.Tools
                 .Select(ri => ri.CurrencySymbol)
                 .FirstOrDefault();
             return symbol;
+        }
+
+        public static double GetBaseSizedAmount(double amountToConvert, double baseIncrement)
+        {
+            // TODO Change double to decimal for resolve precision issues
+            return Math.Floor(amountToConvert / baseIncrement) * baseIncrement;
         }
     }
 }

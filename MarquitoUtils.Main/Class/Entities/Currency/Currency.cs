@@ -31,7 +31,7 @@ namespace MarquitoUtils.Main.Class.Entities.Currency
         {
             this.Value = value;
             this.ISOcurrencySymbol = ISOcurrencySymbol;
-            this.CurrencySymbol = CurrencyTool.getCurrencySymbol(ISOcurrencySymbol);
+            this.CurrencySymbol = CurrencyUtils.getCurrencySymbol(ISOcurrencySymbol);
         }
     }
 }
