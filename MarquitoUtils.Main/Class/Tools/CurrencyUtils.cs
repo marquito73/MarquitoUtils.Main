@@ -34,7 +34,7 @@ namespace MarquitoUtils.Main.Class.Tools
             return symbol;
         }
 
-        public static double GetBaseSizedAmount(double amountToConvert, double baseIncrement)
+        public static double GetSizedAmount(double amountToConvert, double baseIncrement)
         {
             // TODO Change double to decimal for resolve precision issues
             return Convert.ToDouble(Convert.ToDecimal(Math.Floor(amountToConvert / baseIncrement)) * Convert.ToDecimal(baseIncrement));
