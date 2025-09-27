@@ -1,11 +1,6 @@
 ﻿using MarquitoUtils.Main.Class.Enums;
 using MarquitoUtils.Main.Class.Tools;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace MarquitoUtils.Main.Class.Logger
 {
@@ -62,7 +57,7 @@ namespace MarquitoUtils.Main.Class.Logger
             sbLog.Append(Utils.GetAsString(DateTime.UtcNow)).Append(" [").Append(loggerLevel.GetCode().PadRight(7, ' '))
                 .Append("] : ").Append(message);
 
-            Trace.WriteLine(sbLog.ToString());
+            //Trace.WriteLine(sbLog.ToString());
         }
     }
 }

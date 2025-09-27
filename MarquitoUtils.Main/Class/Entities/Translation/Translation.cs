@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using static MarquitoUtils.Main.Class.Enums.EnumLang;
+﻿using static MarquitoUtils.Main.Class.Enums.EnumLang;
 
 namespace MarquitoUtils.Main.Class.Entities.Translation
 {
     /// <summary>
     /// A translation
     /// </summary>
-    [DebuggerDisplay("Language = {Language}, Class = {ClassFullName}, Key = {TranslationKey}, Value = {TranslationValue}")]
+    //[DebuggerDisplay("Language = {Language}, Class = {ClassFullName}, Key = {TranslationKey}, Value = {TranslationValue}")]
     public class Translation
     {
         /// <summary>
@@ -55,7 +51,7 @@ namespace MarquitoUtils.Main.Class.Entities.Translation
         /// <param name="fullClassName">Full name of the class for this translation</param>
         /// <param name="translationKey">The translation key</param>
         /// <param name="translationValue">The label translation</param>
-        public Translation(string originApp, LanguageType language, Type cls, string fullClassName, 
+        public Translation(string originApp, LanguageType language, Type cls, string fullClassName,
             string translationKey, string translationValue)
         {
             this.OriginApp = originApp;
