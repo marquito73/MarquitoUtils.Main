@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using MarquitoUtils.Main.Class.Attributes.Sql;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using MarquitoUtils.Main.Class.Attributes.Sql;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MarquitoUtils.Main.Class.Entities.Sql
 {
@@ -10,6 +10,7 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
     /// </summary>
     [Serializable]
     [Table("script_history")]
+    [Index(nameof(Id), IsUnique = true, Name = "pk_script_history")]
     public class ScriptHistory : Entity
     {
         /// <summary>
@@ -18,7 +19,6 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
         [Required]
         [Key]
         [GenericColumn<int>("script_history_id", isKey: true)]
-        [Index("pk_script_history", IsUnique = true)]
         public override int Id { get; set; }
         /// <summary>
         /// Script's name

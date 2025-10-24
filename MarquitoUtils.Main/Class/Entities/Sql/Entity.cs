@@ -1,9 +1,9 @@
-﻿using MarquitoUtils.Main.Class.Tools;
+﻿using MarquitoUtils.Main.Class.Entities.Sql.Attributes;
 using MarquitoUtils.Main.Class.Enums;
+using MarquitoUtils.Main.Class.Tools;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
-using MarquitoUtils.Main.Class.Entities.Sql.Attributes;
 
 namespace MarquitoUtils.Main.Class.Entities.Sql
 {
@@ -35,7 +35,7 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
 
         public T GetFieldValue<T>(string fieldName)
         {
-            return (T) this.GetPropertyInfo(fieldName).GetValue(this, null);
+            return (T)this.GetPropertyInfo(fieldName).GetValue(this, null);
         }
 
         public bool FieldEquals<TFieldType>(string fieldName, TFieldType value, bool TrimIfString = false)
@@ -107,7 +107,7 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
                 .Where(prop => prop.HasAttribute<ColumnAttribute>())
                 .Where(prop => prop.HasAttribute<RequiredAttribute>())
                 .Where(prop => !prop.HasAttribute<ForeignKeyAttribute>())
-                .Where(prop => prop.HasAttribute<IndexAttribute>())
+                .Where(prop => prop.HasIndexAttribute())
                 .Select(prop => new PropertyConstraint<Entity>(prop.Name, this))
                 .ToList();
             // Get required field of sub entities's required field
@@ -144,7 +144,7 @@ namespace MarquitoUtils.Main.Class.Entities.Sql
                             .Where(subProp => !subProp.Name.Equals(nameof(this.Id)))
                             .Where(subProp => subProp.HasAttribute<ColumnAttribute>())
                             .Where(subProp => subProp.HasAttribute<RequiredAttribute>())
-                            .Where(subProp => subProp.HasAttribute<IndexAttribute>())
+                            .Where(prop => prop.HasIndexAttribute())
                             .Where(subProp => !subProp.HasAttribute<ForeignKeyAttribute>())
                             .Select(subProp => new PropertyConstraint<Entity>(subProp.Name, subEntity, foreignKey.Name));
                     })

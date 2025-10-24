@@ -1,12 +1,13 @@
 ﻿using MarquitoUtils.Main.Class.Entities.Param;
 using MarquitoUtils.Main.Class.Entities.Sql;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace MarquitoUtils.Main.Class.Tools
 {
     public static class UtilsExtensions
     {
-        public static ICollection<Parameter> AddParameter(this ICollection<Parameter> parameters, 
+        public static ICollection<Parameter> AddParameter(this ICollection<Parameter> parameters,
             string parameterName, object parameterValue)
         {
             parameters.Add(new Parameter(parameterName, parameterValue));
@@ -60,6 +61,23 @@ namespace MarquitoUtils.Main.Class.Tools
             where T : Attribute
         {
             return Utils.IsNotNull(prop.GetCustomAttribute<T>());
+        }
+
+        public static bool ClassHasAttribute<T>(this PropertyInfo prop)
+            where T : Attribute
+        {
+            return Utils.IsNotNull(prop.DeclaringType.GetCustomAttribute<T>());
+        }
+
+        public static bool HasIndexAttribute(this PropertyInfo prop)
+        {
+            return Utils.IsNotNull(prop.GetIndexAttribute());
+        }
+
+        public static IndexAttribute? GetIndexAttribute(this PropertyInfo prop)
+        {
+            return prop.DeclaringType.GetCustomAttributes<IndexAttribute>()
+                .FirstOrDefault(index => index.PropertyNames.Contains(prop.Name));
         }
 
         public static bool IsNumericType(this Type type)
@@ -155,7 +173,7 @@ namespace MarquitoUtils.Main.Class.Tools
             return assembly.GetTypes().Any(type => type.FullName.Equals(typeFullName));
         }
 
-        public static Dictionary<K, V> ToDictionnary<K,V>(this IEnumerable<KeyValuePair<K,V>> mapList)
+        public static Dictionary<K, V> ToDictionnary<K, V>(this IEnumerable<KeyValuePair<K, V>> mapList)
         {
             return mapList.ToDictionary(x => x.Key, x => x.Value);
         }

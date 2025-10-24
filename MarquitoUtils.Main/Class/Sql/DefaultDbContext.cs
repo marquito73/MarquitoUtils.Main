@@ -34,13 +34,17 @@ namespace MarquitoUtils.Main.Class.Sql
         /// </summary>
         /// <param name="contextBuilder">Database context builder</param>
         /// <param name="dbConfig">Database configuration for connection</param>
-        protected DefaultDbContext(DbContextOptionsBuilder contextBuilder, DatabaseConfiguration dbConfig) 
+        protected DefaultDbContext(DbContextOptionsBuilder contextBuilder, DatabaseConfiguration dbConfig)
             : base(contextBuilder.Options)
         {
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Translation>()
+                .HasOne(t => t.TranslationField)
+                .WithMany()
+                .HasForeignKey(t => t.TranslationFieldId);
             base.OnModelCreating(modelBuilder);
         }
 
@@ -68,13 +72,11 @@ namespace MarquitoUtils.Main.Class.Sql
         /// <typeparam name="DB">The database context type</typeparam>
         /// <param name="dbConfig">Sql connection builder</param>
         /// <returns>The database context</returns>
-        public static DB GetDbContext<DB>(DatabaseConfiguration dbConfig) 
+        public static DB GetDbContext<DB>(DatabaseConfiguration dbConfig)
             where DB : DefaultDbContext
         {
             DbContextOptionsBuilder contextBuilder = new DbContextOptionsBuilder<DB>();
-            contextBuilder
-                //.UseLazyLoadingProxies()
-                .UseSqlServer(dbConfig.GetConnectionString());
+            contextBuilder.UseSqlServer(dbConfig.GetConnectionString());
 
             return (DB)Activator.CreateInstance(typeof(DB), contextBuilder, dbConfig);
         }

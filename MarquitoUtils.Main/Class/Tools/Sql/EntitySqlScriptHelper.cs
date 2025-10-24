@@ -1,6 +1,5 @@
-﻿using MarquitoUtils.Main.Class.Attributes.Sql;
-using MarquitoUtils.Main.Class.Entities.Sql;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using MarquitoUtils.Main.Class.Entities.Sql;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
@@ -171,9 +170,9 @@ namespace MarquitoUtils.Main.Class.Tools.Sql
             return typeof(TEntity).GetProperties()
                 .Where(x =>
                 {
-                    IndexAttribute? index = x.GetCustomAttribute<IndexAttribute>();
+                    IndexAttribute? index = x.GetIndexAttribute();
 
-                    return Utils.IsNotNull(index) && index.IsUnique && index.Order > 0;
+                    return Utils.IsNotNull(index) && index.IsUnique;
                 }).GroupBy(x => x.GetCustomAttribute<IndexAttribute>().Name)
                 .ToDictionary(x => x.Key, x => x.ToList());
         }

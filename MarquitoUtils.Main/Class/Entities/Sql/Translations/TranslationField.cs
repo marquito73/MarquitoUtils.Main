@@ -1,4 +1,5 @@
 ﻿using MarquitoUtils.Main.Class.Attributes.Sql;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static MarquitoUtils.Main.Class.Enums.EnumLang;
@@ -11,6 +12,8 @@ namespace MarquitoUtils.Main.Class.Entities.Sql.Translations
     /// </summary>
     [Serializable]
     [Table("translation_field")]
+    [Index(nameof(Id), IsUnique = true, Name = "pk_translation_field")]
+    [Index(nameof(TranslationEntityId), nameof(TranslationEntityClass), nameof(TranslationEntityProperty), IsUnique = true, Name = "ix_translation_field")]
     public class TranslationField : Entity
     {
         /// <summary>
@@ -19,14 +22,12 @@ namespace MarquitoUtils.Main.Class.Entities.Sql.Translations
         [Required]
         [Key]
         [GenericColumn<int>("translation_field_id", isKey: true)]
-        [Index("pk_translation_field", IsUnique = true)]
         public override int Id { get; set; }
         /// <summary>
         /// Id of entity need this translation field
         /// </summary>
         [Required]
         [GenericColumn<int>("translation_entity_id", isKey: true)]
-        [Index("ix_translation_field", 1, IsUnique = true)]
         public int TranslationEntityId { get; set; }
         /// <summary>
         /// The entity class
@@ -34,7 +35,6 @@ namespace MarquitoUtils.Main.Class.Entities.Sql.Translations
         [Required]
         [MaxLength(256)]
         [GenericColumn<string>("translation_entity_class")]
-        [Index("ix_translation_field", 2, IsUnique = true)]
         public string TranslationEntityClass { get; set; }
         /// <summary>
         /// The entity property
@@ -42,7 +42,6 @@ namespace MarquitoUtils.Main.Class.Entities.Sql.Translations
         [Required]
         [MaxLength(128)]
         [GenericColumn<string>("translation_entity_property")]
-        [Index("ix_translation_field", 3, IsUnique = true)]
         public string TranslationEntityProperty { get; set; }
 
         /// <summary>

@@ -3,7 +3,7 @@ using MarquitoUtils.Main.Class.Entities.Sql.Attributes;
 using MarquitoUtils.Main.Class.Enums;
 using MarquitoUtils.Main.Class.Sql;
 using MarquitoUtils.Main.Class.Tools;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 
@@ -62,7 +62,7 @@ namespace MarquitoUtils.Main.Class.Office.Excel.Tools
                     .Where(subProp => !subProp.Name.Equals(nameof(Entity.Id)))
                     .Where(subProp =>
                     {
-                        IndexAttribute? index = subProp.GetCustomAttribute<IndexAttribute>();
+                        IndexAttribute? index = subProp.GetIndexAttribute();
 
                         return Utils.IsNotNull(index) && index.IsUnique;
                     })

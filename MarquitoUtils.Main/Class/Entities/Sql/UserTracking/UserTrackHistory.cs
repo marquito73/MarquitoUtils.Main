@@ -1,4 +1,5 @@
 ﻿using MarquitoUtils.Main.Class.Attributes.Sql;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,6 +10,7 @@ namespace MarquitoUtils.Main.Class.Entities.Sql.UserTracking
     /// </summary>
     [Serializable]
     [Table("user_track_history")]
+    [Index(nameof(Id), IsUnique = true, Name = "pk_user_track_history")]
     public class UserTrackHistory : Entity
     {
         /// <summary>
@@ -17,7 +19,6 @@ namespace MarquitoUtils.Main.Class.Entities.Sql.UserTracking
         [Required]
         [Key]
         [GenericColumn<int>("user_track_history_id", isKey: true)]
-        [Index("pk_user_track_history", IsUnique = true)]
         public override int Id { get; set; }
         /// <summary>
         /// User track datetime execution
