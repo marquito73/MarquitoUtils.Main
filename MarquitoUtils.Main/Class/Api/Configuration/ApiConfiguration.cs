@@ -11,5 +11,9 @@ namespace MarquitoUtils.Main.Class.Api.Configuration
         /// Public and private api key for secure access
         /// </summary>
         public ApiKey ApiKey { get; set; }
+        /// <summary>
+        /// Issuer of the api
+        /// </summary>
+        public string Issuer { get; set; }
     }
 }
