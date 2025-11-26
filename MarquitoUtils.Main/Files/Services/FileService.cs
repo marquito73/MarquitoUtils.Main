@@ -90,7 +90,7 @@ namespace MarquitoUtils.Main.Files.Services
 
         public DatabaseConfiguration GetDefaultDatabaseConfiguration(Assembly? assembly = null)
         {
-            return this.GetDatabaseConfiguration(@"Files\Configuration\Database.config", assembly);
+            return this.GetDatabaseConfiguration(@"File\Configuration\Database.config", assembly);
         }
 
         public DatabaseConfiguration GetDatabaseConfiguration(string databaseConfigurationFileName, Assembly? assembly = null)
