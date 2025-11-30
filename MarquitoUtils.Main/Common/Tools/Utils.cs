@@ -43,7 +43,8 @@ namespace MarquitoUtils.Main.Common.Tools
             return obj == null;
         }
 
-#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8604
+#pragma warning disable CS8602
         /// <summary>
         /// Allows to know if an object is not null
         /// </summary>
@@ -53,7 +54,8 @@ namespace MarquitoUtils.Main.Common.Tools
         {
             return !IsNull(obj);
         }
-#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8604
+#pragma warning restore CS8602
 
         /// <summary>
         /// Allows to know if a string is null or empty

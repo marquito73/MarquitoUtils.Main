@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MarquitoUtils.Main.Common.Tools;
+using Newtonsoft.Json;
 
 namespace MarquitoUtils.Main.Common.Converters
 {
@@ -9,9 +10,12 @@ namespace MarquitoUtils.Main.Common.Converters
             return true;
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            writer.WriteRawValue(value.ToString());
+            if (Utils.IsNotNull(value))
+            {
+                writer.WriteRawValue(value.ToString());
+            }
         }
 
         public override bool CanRead
