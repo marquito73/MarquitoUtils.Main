@@ -50,11 +50,6 @@ namespace MarquitoUtils.Main.Sql.Entities.Translations
         [ForeignKey(nameof(Translation.TranslationFieldId))]
         public virtual ICollection<Translation>? Translations { get; set; } = new List<Translation>();
 
-        public TranslationField()
-        {
-
-        }
-
         public string GetTranslation(LanguageType language)
         {
             return this.Translations.Where(translation => translation.Language.Equals(language))

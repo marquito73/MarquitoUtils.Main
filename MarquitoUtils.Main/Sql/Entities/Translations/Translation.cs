@@ -48,10 +48,5 @@ namespace MarquitoUtils.Main.Sql.Entities.Translations
         [MaxLength(2000)]
         [GenericColumn<string>("translation_content")]
         public string TranslationContent { get; set; }
-
-        public Translation()
-        {
-
-        }
     }
 }

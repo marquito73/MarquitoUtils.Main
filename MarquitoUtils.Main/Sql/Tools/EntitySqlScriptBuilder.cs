@@ -122,7 +122,7 @@ namespace MarquitoUtils.Main.Sql.Tools
             if (Utils.IsNotNull(property))
             {
                 ColumnAttribute column = property.GetCustomAttribute<ColumnAttribute>();
-                IndexAttribute index = property.GetCustomAttribute<IndexAttribute>();
+                IndexAttribute index = property.DeclaringType.GetCustomAttributes<IndexAttribute>().FirstOrDefault(x => x.PropertyNames.Count == 1 && x.PropertyNames.FirstOrDefault() == property.Name);
 
                 primaryKeyConstraintSql = $"constraint {index.Name} primary key clustered ({column.Name})";
             }
@@ -168,14 +168,26 @@ namespace MarquitoUtils.Main.Sql.Tools
         /// <returns>The list of composite key constraints of this Entity</returns>
         private Dictionary<string, List<PropertyInfo>> GetCompositeKeys()
         {
-            return typeof(TEntity).GetProperties()
+            // TODO Retrieve index attributes from the class level
+            /*return typeof(TEntity).GetProperties()
                 .Where(x =>
                 {
                     IndexAttribute? index = x.GetIndexAttribute();
 
                     return Utils.IsNotNull(index) && index.IsUnique;
                 }).GroupBy(x => x.GetCustomAttribute<IndexAttribute>().Name)
-                .ToDictionary(x => x.Key, x => x.ToList());
+                .ToDictionary(x => x.Key, x => x.ToList());*/
+
+            return typeof(TEntity).GetCustomAttributes<IndexAttribute>()
+                .Where(x => x.IsUnique && !x.Name.ToLower().StartsWith("pk_"))
+                .Select(x =>
+                {
+                    return new KeyValuePair<string, List<PropertyInfo>>(
+                        x.Name,
+                        x.PropertyNames.Select(propName => typeof(TEntity).GetProperty(propName)).ToList()
+                    );
+                })
+                .ToDictionary(x => x.Key, x => x.Value);
         }
     }
 }

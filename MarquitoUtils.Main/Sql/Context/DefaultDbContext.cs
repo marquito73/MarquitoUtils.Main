@@ -45,6 +45,7 @@ namespace MarquitoUtils.Main.Sql.Context
                 .HasOne(t => t.TranslationField)
                 .WithMany()
                 .HasForeignKey(t => t.TranslationFieldId);
+
             base.OnModelCreating(modelBuilder);
         }
 
