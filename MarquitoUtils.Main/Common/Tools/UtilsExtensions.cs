@@ -63,6 +63,18 @@ namespace MarquitoUtils.Main.Common.Tools
             return Utils.IsNotNull(prop.GetCustomAttribute<T>());
         }
 
+        /// <summary>
+        /// This field has this attribute ?
+        /// </summary>
+        /// <typeparam name="T">The attribute to find</typeparam>
+        /// <param name="field">The field to search</param>
+        /// <returns>This field has this attribute ?</returns>
+        public static bool HasAttribute<T>(this FieldInfo field)
+            where T : Attribute
+        {
+            return Utils.IsNotNull(field.GetCustomAttribute<T>());
+        }
+
         public static bool ClassHasAttribute<T>(this PropertyInfo prop)
             where T : Attribute
         {

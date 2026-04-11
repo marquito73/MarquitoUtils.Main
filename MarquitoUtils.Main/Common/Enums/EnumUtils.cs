@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using MarquitoUtils.Main.Common.Tools;
+using System.Reflection;
 
 namespace MarquitoUtils.Main.Common.Enums
 {
@@ -34,6 +35,24 @@ namespace MarquitoUtils.Main.Common.Enums
             where TEnum : struct, Enum
         {
             return Enum.GetValues<TEnum>().ToList();
+        }
+
+        /// <summary>
+        /// Get the attribute of an enum value, it returns null if the attribute is not found
+        /// </summary>
+        /// <typeparam name="TAttr">The attribute to found</typeparam>
+        /// <typeparam name="TEnum">The enum type to search</typeparam>
+        /// <param name="enumValue">The specific enum to search</param>
+        /// <returns>The attribute founded</returns>
+        public static TAttr? GetAttribute<TAttr, TEnum>(this TEnum enumValue)
+            where TAttr : Attribute
+            where TEnum : struct, IConvertible
+        {
+            return typeof(TEnum).GetFields()
+                    .Where(field => field.Name.Equals(enumValue.ToString()))
+                    .Where(field => field.HasAttribute<TAttr>())
+                    .FirstOrDefault()?.GetCustomAttribute<TAttr>();
+
         }
     }
 }
