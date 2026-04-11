@@ -75,10 +75,28 @@ namespace MarquitoUtils.Main.Common.Tools
             return Utils.IsNotNull(field.GetCustomAttribute<T>());
         }
 
+        /// <summary>
+        /// This type has this attribute ?
+        /// </summary>
+        /// <typeparam name="T">The attribute to find</typeparam>
+        /// <param name="type">The type to search</param>
+        /// <returns>This type has this attribute ?</returns>
+        public static bool ClassHasAttribute<T>(this Type type)
+            where T : Attribute
+        {
+            return Utils.IsNotNull(type.GetCustomAttribute<T>());
+        }
+
+        /// <summary>
+        /// This property has this attribute ?
+        /// </summary>
+        /// <typeparam name="T">The attribute to find</typeparam>
+        /// <param name="prop">The property to search</param>
+        /// <returns>This type has this attribute ?</returns>
         public static bool ClassHasAttribute<T>(this PropertyInfo prop)
             where T : Attribute
         {
-            return Utils.IsNotNull(prop.DeclaringType.GetCustomAttribute<T>());
+            return ClassHasAttribute<T>(prop.DeclaringType);
         }
 
         public static bool HasIndexAttribute(this PropertyInfo prop)
