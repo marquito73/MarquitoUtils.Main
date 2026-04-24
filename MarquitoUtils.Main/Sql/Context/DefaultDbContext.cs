@@ -41,10 +41,10 @@ namespace MarquitoUtils.Main.Sql.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Translation>()
+            /*modelBuilder.Entity<Translation>()
                 .HasOne(t => t.TranslationField)
                 .WithMany()
-                .HasForeignKey(t => t.TranslationFieldId);
+                .HasForeignKey(t => t.TranslationFieldId);*/
 
             base.OnModelCreating(modelBuilder);
         }
