@@ -35,7 +35,7 @@ namespace MarquitoUtils.Main.Sql.Services
             return includes;
         }
 
-        public T? FindEntityById<T>(int id, bool ignoreCache = false) 
+        public T? FindEntityById<T>(int id, bool ignoreCache = false)
             where T : Entity, IEntity
         {
             return this.GetEntityList<T>(new List<Func<T, bool>>(), this.GetIncludes<T>(), ignoreCache)
@@ -57,13 +57,13 @@ namespace MarquitoUtils.Main.Sql.Services
             return entitiesFound;
         }
 
-        public T? FindEntityByUniqueConstraint<T>(List<PropertyConstraint<T>> constraints, bool ignoreCache = false) 
+        public T? FindEntityByUniqueConstraint<T>(List<PropertyConstraint<T>> constraints, bool ignoreCache = false)
             where T : Entity, IEntity
         {
             return this.FindEntityByUniqueConstraint<T>(ignoreCache, constraints.ToArray());
         }
 
-        public T? FindEntityByUniqueConstraint<T>(bool ignoreCache = false, params PropertyConstraint<T>[] constraints) 
+        public T? FindEntityByUniqueConstraint<T>(bool ignoreCache = false, params PropertyConstraint<T>[] constraints)
             where T : Entity, IEntity
         {
             T? entity = null;
@@ -90,7 +90,7 @@ namespace MarquitoUtils.Main.Sql.Services
             return entity is T;
         }
 
-        public bool MatchUniqueConstraint<T>(T entity, params PropertyConstraint<T>[] constraints) 
+        public bool MatchUniqueConstraint<T>(T entity, params PropertyConstraint<T>[] constraints)
             where T : Entity, IEntity
         {
             bool matchConstraints = true;
@@ -167,7 +167,7 @@ namespace MarquitoUtils.Main.Sql.Services
         public List<T> GetEntityList<T>(List<Func<T, bool>> filters, ISet<string> includes, bool ignoreCache = false) where T : Entity, IEntity
         {
             List<T> entityList = new List<T>();
-            
+
             if (!this.DbContext.UseCache || ignoreCache)
             {
 
@@ -235,8 +235,7 @@ namespace MarquitoUtils.Main.Sql.Services
             return dbSet;
         }
 
-        // TODO
-        public void RemoveEntity<T>(T entity) where T : Entity, IEntity
+        public void DeleteEntity<T>(T entity) where T : Entity, IEntity
         {
             if (Utils.IsNotEmpty(this.DbContext.Set<T>()))
             {

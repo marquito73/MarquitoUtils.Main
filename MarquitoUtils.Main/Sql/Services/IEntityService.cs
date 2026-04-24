@@ -25,7 +25,7 @@ namespace MarquitoUtils.Main.Sql.Services
         /// <typeparam name="T">The entity type</typeparam>
         /// <param name="id">The id</param>
         /// <returns>An entity found by his id</returns>
-        public T? FindEntityById<T>(int id, bool ignoreCache = false) 
+        public T? FindEntityById<T>(int id, bool ignoreCache = false)
             where T : Entity, IEntity;
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace MarquitoUtils.Main.Sql.Services
         /// </summary>
         /// <typeparam name="T">The entity type</typeparam>
         /// <param name="entity">The entity to persist</param>
-        public void PersistEntity<T>(T entity) 
+        public void PersistEntity<T>(T entity)
             where T : Entity, IEntity;
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace MarquitoUtils.Main.Sql.Services
         /// </summary>
         /// <typeparam name="T">The entity type</typeparam>
         /// <returns>Entities of specific entity type</returns>
-        public List<T> GetEntityList<T>(bool ignoreCache = false) 
+        public List<T> GetEntityList<T>(bool ignoreCache = false)
             where T : Entity, IEntity;
 
         /// <summary>
@@ -88,8 +88,17 @@ namespace MarquitoUtils.Main.Sql.Services
         /// <param name="filters">Filters</param>
         /// <param name="includes">Includes</param>
         /// <returns>Entities of specific entity type</returns>
-        public List<T> GetEntityList<T>(List<Func<T, bool>> filters, ISet<string> includes, bool ignoreCache = false) 
+        public List<T> GetEntityList<T>(List<Func<T, bool>> filters, ISet<string> includes, bool ignoreCache = false)
             where T : Entity, IEntity;
+
+        /// <summary>
+        /// Delete an entity from database, if the entity is tracked by DbContext, it will be deleted directly, 
+        /// otherwise, it will be attached to DbContext and then deleted when flush data
+        /// </summary>
+        /// <typeparam name="T">The entity type</typeparam>
+        /// <param name="entity">The entity to delete</param>
+        public void DeleteEntity<T>(T entity) where T : Entity, IEntity;
+
         /// <summary>
         /// Flush data to the database, if any error happen, transaction will be rollback
         /// </summary>
