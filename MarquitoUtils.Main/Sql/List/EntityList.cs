@@ -36,13 +36,17 @@ namespace MarquitoUtils.Main.Sql.List
             this.IgnoreCache = ignoreCache;
             // Get list properties, and includes data
             typeof(T).GetProperties()
-                .Where(prop => prop.PropertyType.IsAnEntityType()).ToList()
+                .Where(prop => prop.PropertyType.IsAnEntityType() || prop.PropertyType.IsGenericDbCollectionType()).ToList()
                 .ForEach(prop =>
                 {
                     if (prop.PropertyType.IsEquivalentTo(typeof(TranslationField)))
                     {
                         this.Includes.Add(prop.Name);
                         this.Includes.Add($"{prop.Name}.{nameof(TranslationField.Translations)}");
+                    }
+                    else
+                    {
+                        this.Includes.Add($"{prop.Name}");
                     }
                 });
         }

@@ -22,13 +22,17 @@ namespace MarquitoUtils.Main.Sql.Services
 
             // Get list properties, and includes data
             typeof(T).GetProperties()
-                .Where(prop => prop.PropertyType.IsAnEntityType()).ToList()
+                .Where(prop => prop.PropertyType.IsAnEntityType() || prop.PropertyType.IsGenericDbCollectionType()).ToList()
                 .ForEach(prop =>
                 {
                     if (prop.PropertyType.IsEquivalentTo(typeof(TranslationField)))
                     {
                         includes.Add(prop.Name);
                         includes.Add($"{prop.Name}.{nameof(TranslationField.Translations)}");
+                    }
+                    else
+                    {
+                        includes.Add($"{prop.Name}");
                     }
                 });
 
