@@ -152,6 +152,22 @@ namespace MarquitoUtils.Main.Common.Tools
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
+        #region Inheritance
+
+        /// <summary>
+        /// Determinate if a type is inherited by another type
+        /// </summary>
+        /// <typeparam name="TType">The type to check</typeparam>
+        /// <param name="typeChild">The parent type</param>
+        /// <returns></returns>
+        public static bool IsInheritedBy<TType>(this Type typeChild)
+            where TType : class
+        {
+            return typeChild.IsSubclassOf(typeof(TType)) || typeChild.IsEquivalentTo(typeof(TType));
+        }
+
+        #endregion Inheritance
+
         public static bool IsAnEntityType(this Type type)
         {
             return type.IsSubclassOf(typeof(Entity));

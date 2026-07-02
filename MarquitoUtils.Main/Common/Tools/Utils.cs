@@ -583,7 +583,6 @@ namespace MarquitoUtils.Main.Common.Tools
             where T1 : Type
             where T2 : Type
         {
-            //return TypeIsInheritedBy<T1, T2>();
             return typeChild.IsSubclassOf(typeParent) || typeChild.IsEquivalentTo(typeParent);
         }
 
