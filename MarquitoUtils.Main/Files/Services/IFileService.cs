@@ -42,8 +42,17 @@ namespace MarquitoUtils.Main.Files.Services
         /// </summary>
         /// <typeparam name="T">The type of the object returned</typeparam>
         /// <param name="filename">The XML filename</param>
+        /// <param name="assembly">The assembly (if null, take the entry assembly)</param>
         /// <returns>Typed object from an XML file</returns>
-        public T GetDataFromXMLFile<T>(string filename, Assembly? assembly = null) where T : class, new();
+        public T GetDataFromXmlFile<T>(string filename, Assembly? assembly = null) where T : class, new();
+
+        /// <summary>
+        /// Get an XML file from a typed object
+        /// </summary>
+        /// <typeparam name="T">The type of the object</typeparam>
+        /// <param name="data">The typed object</param>
+        /// <returns>An XML file as a string</returns>
+        public string GetXmlFileFromData<T>(T data) where T : class, new();
 
         /// <summary>
         /// Get the database configuration file of the project launch the application

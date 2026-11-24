@@ -67,7 +67,7 @@ namespace MarquitoUtils.Main.Files.Services
             return file;
         }
 
-        public T GetDataFromXMLFile<T>(string filename, Assembly? assembly = null)
+        public T GetDataFromXmlFile<T>(string filename, Assembly? assembly = null)
             where T : class, new()
         {
             T data;
@@ -86,6 +86,26 @@ namespace MarquitoUtils.Main.Files.Services
 
 
             return data;
+        }
+
+        public string GetXmlFileFromData<T>(T data) where T : class, new()
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            XmlWriterSettings settings = new XmlWriterSettings
+            {
+                Indent = true,
+                Encoding = new UTF8Encoding(false),
+            };
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                using (XmlWriter writer = XmlWriter.Create(stream, settings))
+                {
+                    serializer.Serialize(writer, data);
+                }
+
+                return Encoding.UTF8.GetString(stream.ToArray());
+            }
         }
 
         public DatabaseConfiguration GetDefaultDatabaseConfiguration(Assembly? assembly = null)
