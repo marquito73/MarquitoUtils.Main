@@ -116,18 +116,20 @@ namespace MarquitoUtils.Main.Sql.Services
 
                         this.AddNewScriptHistory(scriptName);
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         try
                         {
                             // Error occurs, rollback transaction
                             sqlTransaction.Rollback();
                         }
-                        catch (Exception ex2)
+                        catch (Exception)
                         {
                             // Log if rollback doesn't work
                             //Logger.Logger.Error("A transaction has rollback : " + ex2.GetType() + " : " + ex2.Message);
                         }
+
+                        throw;
                     }
                 }
             }
