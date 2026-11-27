@@ -42,6 +42,9 @@ namespace MarquitoUtils.Main.Sql.Attributes
                     case nameof(DateTime):
                         this.TypeName = typeof(T).Name.ToLower();
                         break;
+                    case nameof(Boolean):
+                        this.TypeName = "bit";
+                        break;
                     case nameof(ImageData):
                         this.TypeName = "varbinary";
                         break;
